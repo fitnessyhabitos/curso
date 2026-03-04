@@ -1,0 +1,60 @@
+; ========================================
+; EJERCICIOS - Procedimientos y REPEAT
+; Módulo 3 - Repetición y procedimientos
+; ========================================
+
+; --- Procedimiento 1: Cuadrado flexible ---
+TO CUADRADO :LADO
+  REPEAT 4 [FD :LADO RT 90]
+END
+
+; --- Procedimiento 2: Triángulo flexible ---
+TO TRIANGULO :LADO
+  REPEAT 3 [FD :LADO RT 120]
+END
+
+; --- Procedimiento 3: Polígono genérico ---
+TO POLIGONO :LADOS :TAMANO
+  REPEAT :LADOS [FD :TAMANO RT 360 / :LADOS]
+END
+
+; --- Procedimiento 4: Estrella de 5 puntas ---
+TO ESTRELLA :TAMANO
+  REPEAT 5 [FD :TAMANO RT 144]
+END
+
+; --- Procedimiento 5: Flor de cuadrados ---
+TO FLOR_CUADRADOS :TAMANO :PETALES
+  REPEAT :PETALES [CUADRADO :TAMANO RT 360 / :PETALES]
+END
+
+; --- Procedimiento 6: Espiral ---
+TO ESPIRAL :PASOS :INCREMENTO
+  REPEAT :PASOS [FD :PASOS * :INCREMENTO RT 91]
+END
+
+; ========================================
+; PROGRAMA PRINCIPAL - descomenta las
+; líneas que quieras ejecutar
+; ========================================
+
+CS
+HT
+SETBACKGROUND [20 20 60]
+
+; Galería de figuras
+SETPC [255 200 0]
+CUADRADO 80
+
+PU RT 90 FD 120 LT 90 PD
+SETPC [0 200 255]
+TRIANGULO 80
+
+PU RT 90 FD 120 LT 90 PD
+SETPC [255 100 100]
+ESTRELLA 80
+
+PU HOME PD
+PU FD 150 PD
+SETPC [100 255 100]
+FLOR_CUADRADOS 50 8

@@ -1,0 +1,64 @@
+; ========================================
+; EJERCICIO 01 - Líneas y movimientos
+; Módulo 1 - Comandos básicos de Logo
+; ========================================
+; Instrucciones: Ejecuta cada sección por separado.
+; Borra con CS entre cada ejercicio.
+
+; --- EJERCICIO 1A: La línea recta ---
+; Dibuja una línea de 100 pasos hacia arriba
+FD 100
+
+; --- EJERCICIO 1B: La L ---
+; Borra la pantalla primero
+CS
+FD 80
+RT 90
+FD 80
+
+; --- EJERCICIO 1C: La U ---
+CS
+FD 100
+RT 90
+FD 60
+RT 90
+FD 100
+
+; --- EJERCICIO 1D: La Z ---
+CS
+FD 80
+RT 135
+FD 100
+LT 135
+FD 80
+
+; --- EJERCICIO 1E: El cuadrado ---
+CS
+FD 100
+RT 90
+FD 100
+RT 90
+FD 100
+RT 90
+FD 100
+
+; --- EJERCICIO 1F: Dos cuadrados separados ---
+CS
+FD 60
+RT 90
+FD 60
+RT 90
+FD 60
+RT 90
+FD 60
+PU
+RT 90
+FD 90
+PD
+FD 60
+RT 90
+FD 60
+RT 90
+FD 60
+RT 90
+FD 60
