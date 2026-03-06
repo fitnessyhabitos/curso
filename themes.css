@@ -251,6 +251,8 @@
 [data-theme="futurista"] .example-card,
 [data-theme="futurista"] .ref-panel,
 [data-theme="futurista"] .panel,
+[data-theme="futurista"] .turtle-wrap,
+[data-theme="futurista"] .output-wrap,
 [data-theme="futurista"] .progress-wrap,
 [data-theme="futurista"] .avatar-picker {
   background: rgba(14,165,233,0.07) !important;
@@ -273,9 +275,22 @@
   border-color: rgba(0,212,255,0.15) !important;
 }
 
+[data-theme="futurista"] body {
+  background: linear-gradient(135deg, #0F172A 0%, #0D1B2A 50%, #091426 100%) !important;
+}
+
 [data-theme="futurista"] #code {
   background: rgba(0,212,255,0.03) !important;
   color: #E2E8F0 !important;
+}
+
+[data-theme="futurista"] .turtle-body {
+  background: #0D1B2A !important;
+}
+
+[data-theme="futurista"] #output {
+  background: rgba(0,212,255,0.03) !important;
+  color: #22D3EE !important;
 }
 
 [data-theme="futurista"] .nav-brand,
@@ -402,6 +417,8 @@
 [data-theme="cyberpunk"] .example-card,
 [data-theme="cyberpunk"] .ref-panel,
 [data-theme="cyberpunk"] .panel,
+[data-theme="cyberpunk"] .turtle-wrap,
+[data-theme="cyberpunk"] .output-wrap,
 [data-theme="cyberpunk"] .progress-wrap,
 [data-theme="cyberpunk"] .avatar-picker {
   background: rgba(20,20,20,0.75) !important;
@@ -428,9 +445,22 @@
   border-color: rgba(255,0,63,0.2) !important;
 }
 
+[data-theme="cyberpunk"] body {
+  background: #0A0A0A !important;
+}
+
 [data-theme="cyberpunk"] #code {
-  background: #080808 !important;
+  background: #0D0D0D !important;
   color: #FF6688 !important;
+}
+
+[data-theme="cyberpunk"] .turtle-body {
+  background: #111111 !important;
+}
+
+[data-theme="cyberpunk"] #output {
+  background: #050505 !important;
+  color: #FF4466 !important;
 }
 
 [data-theme="cyberpunk"] .btn-back,
