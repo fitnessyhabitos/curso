@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐢 Curso Logo y Python para Niños</title>
+
+  <!-- Marked.js: convierte Markdown a HTML -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+  <!-- Highlight.js: colorea el código -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+
+  <!-- Aplicar tema guardado ANTES de renderizar (evita destello blanco) -->
+  <script>(function(){ var t=localStorage.getItem('tema'); if(t&&t!=='clasico') document.documentElement.setAttribute('data-theme',t); })();</script>
+  <link rel="stylesheet" href="themes.css">
+
+  <style>
+    /* ─── RESET Y BASE ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --sidebar-w: 280px;
+      --nav-bg:    #0d1b2a;
+      --nav-text:  #c9d8e8;
+      --nav-hover: #1e3a5f;
+      --logo-col:  #f59e0b;
+      --py-col:    #10b981;
+      --accent:    #3b82f6;
+      --bg:        #f8fafc;
+      --surface:   #ffffff;
+      --border:    #e2e8f0;
+      --text:      #1e293b;
+      --text-muted:#64748b;
+      --radius:    10px;
+      --header-h:  56px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ─── SIDEBAR ───────────────────────────────────────────── */
+    #sidebar {
+      width: var(--sidebar-w);
+      min-height: 100vh;
+      background: var(--nav-bg);
+      color: var(--nav-text);
+      position: fixed;
+      top: 0; left: 0;
+      overflow-y: auto;
+      z-index: 100;
+      transition: transform .3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px 16px 16px;
+      border-bottom: 1px solid #1e3a5f;
+      background: #071525;
+    }
+
+    .sidebar-header h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+    }
+
+    .sidebar-header p {
+      font-size: .72rem;
+      color: #7ca1c4;
+      margin-top: 4px;
+    }
+
+    .nav-section {
+      padding: 10px 0 4px;
+    }
+
+    .nav-section-title {
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #4a7aaa;
+      padding: 6px 16px 4px;
+    }
+
+    .nav-group {
+      margin: 4px 8px;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .nav-group-header {
+      font-size: .8rem;
+      font-weight: 600;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: var(--radius);
+      transition: background .15s;
+    }
+    .nav-group-header:hover { background: var(--nav-hover); }
+
+    .nav-group-header .badge {
+      font-size: .6rem;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-weight: 700;
+      margin-left: auto;
+    }
+    .logo-badge { background: var(--logo-col); color: #000; }
+    .py-badge   { background: var(--py-col);   color: #000; }
+
+    .nav-sub {
+      padding-left: 8px;
+    }
+
+    .nav-link {
+      display: block;
+      font-size: .78rem;
+      padding: 5px 10px;
+      color: var(--nav-text);
+      text-decoration: none;
+      border-radius: 6px;
+      margin: 1px 0;
+      transition: background .15s, color .15s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .nav-link:hover   { background: var(--nav-hover); color: #fff; }
+    .nav-link.active  { background: var(--accent); color: #fff; }
+    .nav-link.teoria  { border-left: 2px solid var(--accent); }
+    .nav-link.activ   { border-left: 2px solid var(--py-col); }
+    .nav-link.project { border-left: 2px solid var(--logo-col); }
+
+    .nav-solo {
+      margin: 2px 8px;
+    }
+
+    /* ─── HEADER MÓVIL ──────────────────────────────────────── */
+    #mobile-header {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: var(--header-h);
+      background: var(--nav-bg);
+      z-index: 200;
+      align-items: center;
+      padding: 0 16px;
+      gap: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.3);
+    }
+
+    #menu-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    #mobile-title {
+      color: #fff;
+      font-size: .9rem;
+      font-weight: 600;
+    }
+
+    /* ─── CONTENIDO PRINCIPAL ───────────────────────────────── */
+    #main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #content-area {
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    /* ─── PANTALLA DE BIENVENIDA ────────────────────────────── */
+    #welcome {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    #welcome .hero-emoji { font-size: 5rem; display: block; margin-bottom: 16px; }
+    #welcome h1 { font-size: 2.2rem; color: var(--text); margin-bottom: 12px; }
+    #welcome p  { font-size: 1.1rem; color: var(--text-muted); max-width: 500px; margin: 0 auto 32px; }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-top: 32px;
+      text-align: left;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .15s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,.1); }
+    .card .card-icon { font-size: 2rem; margin-bottom: 10px; display: block; }
+    .card h3 { font-size: .95rem; font-weight: 700; margin-bottom: 4px; }
+    .card p  { font-size: .8rem; color: var(--text-muted); }
+
+    .card.logo-card { border-top: 3px solid var(--logo-col); }
+    .card.py-card   { border-top: 3px solid var(--py-col); }
+    .card.info-card { border-top: 3px solid var(--accent); }
+
+    /* ─── MARKDOWN RENDERIZADO ──────────────────────────────── */
+    #md-content h1 {
+      font-size: 1.9rem; font-weight: 800;
+      border-bottom: 3px solid var(--accent);
+      padding-bottom: 10px; margin-bottom: 24px; margin-top: 8px;
+    }
+    #md-content h2 {
+      font-size: 1.35rem; font-weight: 700;
+      margin-top: 36px; margin-bottom: 12px;
+      color: #1e40af;
+    }
+    #md-content h3 {
+      font-size: 1.1rem; font-weight: 700;
+      margin-top: 24px; margin-bottom: 10px;
+      color: #475569;
+    }
+    #md-content p  { line-height: 1.75; margin-bottom: 14px; }
+    #md-content li { line-height: 1.7; margin-bottom: 4px; }
+    #md-content ul, #md-content ol { padding-left: 24px; margin-bottom: 14px; }
+
+    #md-content a  { color: var(--accent); }
+    #md-content a:hover { text-decoration: underline; }
+
+    #md-content strong { color: #0f172a; }
+    #md-content em     { color: #475569; }
+
+    /* Bloques de código */
+    #md-content pre {
+      background: #1e293b;
+      border-radius: 8px;
+      padding: 18px;
+      overflow-x: auto;
+      margin: 18px 0;
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+
+    #md-content code:not(pre code) {
+      background: #e0e7ff;
+      color: #3730a3;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: .88em;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+
+    /* Blockquotes */
+    #md-content blockquote {
+      border-left: 4px solid var(--accent);
+      background: #eff6ff;
+      padding: 12px 16px;
+      margin: 16px 0;
+      border-radius: 0 8px 8px 0;
+      color: #1e40af;
+    }
+
+    /* Tablas */
+    #md-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 18px 0;
+      font-size: .9rem;
+    }
+    #md-content th {
+      background: #1e3a5f;
+      color: #fff;
+      padding: 10px 14px;
+      text-align: left;
+    }
+    #md-content td {
+      padding: 8px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    #md-content tr:nth-child(even) td { background: #f1f5f9; }
+    #md-content tr:hover td { background: #dbeafe; }
+
+    /* Checkboxes */
+    #md-content input[type="checkbox"] {
+      width: 16px; height: 16px;
+      margin-right: 8px; cursor: pointer;
+    }
+
+    /* Separadores */
+    #md-content hr {
+      border: none;
+      border-top: 2px solid var(--border);
+      margin: 32px 0;
+    }
+
+    /* ─── BREADCRUMB ────────────────────────────────────────── */
+    #breadcrumb {
+      font-size: .8rem;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    #breadcrumb span { color: var(--text-muted); }
+    #breadcrumb a { color: var(--accent); text-decoration: none; }
+    #breadcrumb a:hover { text-decoration: underline; }
+
+    /* ─── BOTONES NAV INFERIOR ──────────────────────────────── */
+    #page-nav {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 2px solid var(--border);
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 18px;
+      cursor: pointer;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--text);
+      text-decoration: none;
+      transition: background .15s, border-color .15s;
+      max-width: 48%;
+    }
+    .nav-btn:hover { background: #eff6ff; border-color: var(--accent); }
+    .nav-btn.next  { margin-left: auto; text-align: right; flex-direction: row-reverse; }
+    .nav-btn-label { font-size: .72rem; color: var(--text-muted); font-weight: 400; display: block; }
+
+    /* ─── SPINNER ───────────────────────────────────────────── */
+    #spinner {
+      display: none;
+      text-align: center;
+      padding: 60px;
+      color: var(--text-muted);
+      font-size: 2rem;
+    }
+
+    /* ─── OVERLAY MÓVIL ─────────────────────────────────────── */
+    #overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.5);
+      z-index: 99;
+    }
+
+    /* ─── RESPONSIVE ────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      #sidebar {
+        transform: translateX(-100%);
+      }
+      #sidebar.open {
+        transform: translateX(0);
+      }
+      #mobile-header { display: flex; }
+      #overlay.show  { display: block; }
+      #main          { margin-left: 0; padding-top: var(--header-h); }
+      #content-area  { padding: 24px 16px 60px; }
+      #md-content h1 { font-size: 1.5rem; }
+      .card-grid     { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .card-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ─── PRINT ─────────────────────────────────────────────── */
+    @media print {
+      #sidebar, #mobile-header, #page-nav { display: none; }
+      #main { margin-left: 0; }
+    }
+
+    /* ══════════════════════════════════════════════════════════
+       OVERRIDES DE TEMAS OSCUROS — deben ir al final para ganar
+       al CSS base de esta página
+       ══════════════════════════════════════════════════════════ */
+
+    /* ── CYBERPUNK ─────────────────────────────────────────── */
+    [data-theme="cyberpunk"] body {
+      background: #0A0A0A !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] #sidebar {
+      background: #0D0D0D !important;
+      border-right: 1px solid rgba(255,0,63,0.3) !important;
+    }
+    [data-theme="cyberpunk"] .sidebar-header {
+      background: #050505 !important;
+      border-bottom-color: rgba(255,0,63,0.2) !important;
+    }
+    [data-theme="cyberpunk"] .sidebar-header h1 {
+      color: #FF003F !important;
+      text-shadow: 0 0 10px rgba(255,0,63,0.5) !important;
+    }
+    [data-theme="cyberpunk"] .sidebar-header p { color: #555 !important; }
+    [data-theme="cyberpunk"] .nav-section-title { color: rgba(255,0,63,0.55) !important; }
+    [data-theme="cyberpunk"] .nav-group-header  { color: #D1D5DB !important; }
+    [data-theme="cyberpunk"] .nav-group-header:hover { background: rgba(255,0,63,0.08) !important; }
+    [data-theme="cyberpunk"] .nav-link          { color: #9CA3AF !important; }
+    [data-theme="cyberpunk"] .nav-link:hover    { background: rgba(255,0,63,0.08) !important; color: #FF003F !important; }
+    [data-theme="cyberpunk"] .nav-link.active   { background: #FF003F !important; color: #fff !important; }
+    [data-theme="cyberpunk"] .nav-link.teoria   { border-left-color: #FF003F !important; }
+    [data-theme="cyberpunk"] .nav-link.activ    { border-left-color: #00FFAA !important; }
+    [data-theme="cyberpunk"] .nav-link.project  { border-left-color: #FFD700 !important; }
+    [data-theme="cyberpunk"] #mobile-header {
+      background: #0D0D0D !important;
+      border-bottom: 1px solid rgba(255,0,63,0.3) !important;
+    }
+    /* Welcome */
+    [data-theme="cyberpunk"] #welcome h1 { color: #FFFFFF !important; }
+    [data-theme="cyberpunk"] #welcome p  { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] .card {
+      background: rgba(18,18,18,0.9) !important;
+      border-color: rgba(255,0,63,0.25) !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] .card:hover {
+      box-shadow: 0 8px 24px rgba(255,0,63,0.15) !important;
+    }
+    [data-theme="cyberpunk"] .card h3 { color: #E5E5E5 !important; }
+    [data-theme="cyberpunk"] .card p  { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] .card.logo-card { border-top-color: #FF003F !important; }
+    [data-theme="cyberpunk"] .card.py-card   { border-top-color: #00FFAA !important; }
+    [data-theme="cyberpunk"] .card.info-card { border-top-color: rgba(255,0,63,0.5) !important; }
+    /* Markdown */
+    [data-theme="cyberpunk"] #md-content h1 {
+      color: #FFFFFF !important;
+      border-bottom-color: rgba(255,0,63,0.4) !important;
+    }
+    [data-theme="cyberpunk"] #md-content h2 { color: #FF6688 !important; }
+    [data-theme="cyberpunk"] #md-content h3 { color: #00FFAA !important; }
+    [data-theme="cyberpunk"] #md-content p,
+    [data-theme="cyberpunk"] #md-content li { color: #D1D5DB !important; }
+    [data-theme="cyberpunk"] #md-content strong { color: #FFFFFF !important; }
+    [data-theme="cyberpunk"] #md-content em     { color: #9CA3AF !important; }
+    [data-theme="cyberpunk"] #md-content a      { color: #00FFAA !important; }
+    [data-theme="cyberpunk"] #md-content code:not(pre code) {
+      background: rgba(255,0,63,0.08) !important;
+      color: #FF6688 !important;
+      border: 1px solid rgba(255,0,63,0.25) !important;
+    }
+    [data-theme="cyberpunk"] #md-content blockquote {
+      background: rgba(255,0,63,0.04) !important;
+      border-left-color: #FF003F !important;
+      color: #FF6688 !important;
+    }
+    [data-theme="cyberpunk"] #md-content th {
+      background: #1A0000 !important;
+      color: #FF003F !important;
+    }
+    [data-theme="cyberpunk"] #md-content td {
+      border-bottom-color: rgba(255,0,63,0.15) !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] #md-content tr:nth-child(even) td { background: rgba(255,0,63,0.03) !important; }
+    [data-theme="cyberpunk"] #md-content tr:hover td           { background: rgba(255,0,63,0.07) !important; }
+    [data-theme="cyberpunk"] #md-content hr { border-top-color: rgba(255,0,63,0.25) !important; }
+    /* Breadcrumb + nav */
+    [data-theme="cyberpunk"] #breadcrumb       { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] #breadcrumb span  { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] #breadcrumb a     { color: #00FFAA !important; }
+    [data-theme="cyberpunk"] #page-nav         { border-top-color: rgba(255,0,63,0.2) !important; }
+    [data-theme="cyberpunk"] .nav-btn {
+      background: rgba(15,15,15,0.95) !important;
+      border-color: rgba(255,0,63,0.3) !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] .nav-btn:hover {
+      background: rgba(255,0,63,0.05) !important;
+      border-color: #FF003F !important;
+    }
+    [data-theme="cyberpunk"] .nav-btn-label { color: #6B7280 !important; }
+
+    /* ── FUTURISTA ──────────────────────────────────────────── */
+    [data-theme="futurista"] body {
+      background: linear-gradient(135deg, #0F172A 0%, #0D1B2A 50%, #091426 100%) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] #sidebar {
+      background: rgba(8,16,32,0.97) !important;
+      border-right: 1px solid rgba(0,212,255,0.2) !important;
+    }
+    [data-theme="futurista"] .sidebar-header {
+      background: rgba(4,10,22,0.99) !important;
+      border-bottom-color: rgba(0,212,255,0.15) !important;
+    }
+    [data-theme="futurista"] .sidebar-header h1 {
+      color: #00D4FF !important;
+      text-shadow: 0 0 10px rgba(0,212,255,0.4) !important;
+    }
+    [data-theme="futurista"] .sidebar-header p { color: #64748B !important; }
+    [data-theme="futurista"] .nav-section-title { color: rgba(0,212,255,0.5) !important; }
+    [data-theme="futurista"] .nav-group-header  { color: #CBD5E1 !important; }
+    [data-theme="futurista"] .nav-group-header:hover { background: rgba(0,212,255,0.07) !important; }
+    [data-theme="futurista"] .nav-link          { color: #94A3B8 !important; }
+    [data-theme="futurista"] .nav-link:hover    { background: rgba(0,212,255,0.07) !important; color: #00D4FF !important; }
+    [data-theme="futurista"] .nav-link.active   {
+      background: rgba(0,212,255,0.18) !important;
+      color: #00D4FF !important;
+    }
+    [data-theme="futurista"] .nav-link.teoria  { border-left-color: #00D4FF !important; }
+    [data-theme="futurista"] .nav-link.activ   { border-left-color: #38BDF8 !important; }
+    [data-theme="futurista"] #mobile-header    { background: rgba(8,16,32,0.97) !important; }
+    /* Welcome */
+    [data-theme="futurista"] #welcome h1 {
+      color: #00D4FF !important;
+      text-shadow: 0 0 20px rgba(0,212,255,0.4) !important;
+    }
+    [data-theme="futurista"] #welcome p  { color: #64748B !important; }
+    [data-theme="futurista"] .card {
+      background: rgba(14,165,233,0.06) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border-color: rgba(0,212,255,0.2) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] .card:hover {
+      box-shadow: 0 8px 24px rgba(0,212,255,0.1) !important;
+    }
+    [data-theme="futurista"] .card h3 { color: #E2E8F0 !important; }
+    [data-theme="futurista"] .card p  { color: #64748B !important; }
+    [data-theme="futurista"] .card.logo-card { border-top-color: #0EA5E9 !important; }
+    [data-theme="futurista"] .card.py-card   { border-top-color: #06B6D4 !important; }
+    /* Markdown */
+    [data-theme="futurista"] #md-content h1 {
+      color: #00D4FF !important;
+      border-bottom-color: rgba(0,212,255,0.3) !important;
+      text-shadow: 0 0 15px rgba(0,212,255,0.25) !important;
+    }
+    [data-theme="futurista"] #md-content h2 { color: #38BDF8 !important; }
+    [data-theme="futurista"] #md-content h3 { color: #7DD3FC !important; }
+    [data-theme="futurista"] #md-content p,
+    [data-theme="futurista"] #md-content li { color: #CBD5E1 !important; }
+    [data-theme="futurista"] #md-content strong { color: #E2E8F0 !important; }
+    [data-theme="futurista"] #md-content a      { color: #38BDF8 !important; }
+    [data-theme="futurista"] #md-content code:not(pre code) {
+      background: rgba(0,212,255,0.08) !important;
+      color: #38BDF8 !important;
+      border: 1px solid rgba(0,212,255,0.2) !important;
+    }
+    [data-theme="futurista"] #md-content blockquote {
+      background: rgba(0,212,255,0.04) !important;
+      border-left-color: #00D4FF !important;
+      color: #38BDF8 !important;
+    }
+    [data-theme="futurista"] #md-content th {
+      background: rgba(0,212,255,0.15) !important;
+      color: #00D4FF !important;
+    }
+    [data-theme="futurista"] #md-content td {
+      border-bottom-color: rgba(0,212,255,0.1) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] #md-content tr:nth-child(even) td { background: rgba(0,212,255,0.03) !important; }
+    [data-theme="futurista"] #md-content tr:hover td           { background: rgba(0,212,255,0.07) !important; }
+    [data-theme="futurista"] #md-content hr { border-top-color: rgba(0,212,255,0.2) !important; }
+    /* Breadcrumb + nav */
+    [data-theme="futurista"] #breadcrumb      { color: #64748B !important; }
+    [data-theme="futurista"] #breadcrumb a    { color: #38BDF8 !important; }
+    [data-theme="futurista"] #page-nav        { border-top-color: rgba(0,212,255,0.15) !important; }
+    [data-theme="futurista"] .nav-btn {
+      background: rgba(0,212,255,0.06) !important;
+      border-color: rgba(0,212,255,0.2) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] .nav-btn:hover {
+      background: rgba(0,212,255,0.1) !important;
+      border-color: #00D4FF !important;
+    }
+    [data-theme="futurista"] .nav-btn-label { color: #64748B !important; }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SIDEBAR DE NAVEGACIÓN
+═══════════════════════════════════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-header">
+    <h1>🐢 Curso Logo y Python</h1>
+    <p>Para niños · 12 semanas · Nivel cero</p>
+  </div>
+
+  <!-- General -->
+  <div class="nav-section">
+    <div class="nav-section-title">General</div>
+    <div class="nav-solo">
+      <a class="nav-link" href="#" data-file="README.md">🏠 Presentación del curso</a>
+      <a class="nav-link" href="#" data-file="PLANNING.md">📅 Planning (12 semanas)</a>
+      <a class="nav-link" href="#" data-file="Hoja_de_Referencia_Rapida.md">📄 Referencia rápida</a>
+      <a class="nav-link" href="#" data-file="Recursos_y_Paginas_Web.md">🌐 Recursos y webs</a>
+    </div>
+  </div>
+
+  <!-- Fase 1: Logo -->
+  <div class="nav-section">
+    <div class="nav-section-title">Fase 1 · Logo</div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        📦 Módulo 0 · Bienvenida
+        <span class="badge logo-badge">Sem 0</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_00_Bienvenida/teoria.md">📖 Teoría</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🐢 Módulo 1 · Comandos básicos
+        <span class="badge logo-badge">Sem 1</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_01_Logo_Comandos_Basicos/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_01_Logo_Comandos_Basicos/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🎨 Módulo 2 · Figuras y colores
+        <span class="badge logo-badge">Sem 2</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_02_Logo_Figuras_Colores/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_02_Logo_Figuras_Colores/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🔄 Módulo 3 · Repetición y proc.
+        <span class="badge logo-badge">Sem 3</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_03_Logo_Repeticion_Procedimientos/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_03_Logo_Repeticion_Procedimientos/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🌟 Módulo 4 · Proyecto Logo
+        <span class="badge logo-badge">Sem 4</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link project" href="#" data-file="Modulo_04_Proyecto_Logo/proyecto.md">🎨 Proyecto</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fase 2: Python -->
+  <div class="nav-section">
+    <div class="nav-section-title">Fase 2 · Python</div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        👋 Módulo 5 · Hola, Python!
+        <span class="badge py-badge">Sem 5</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_05_Python_Hola_Variables/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_05_Python_Hola_Variables/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🔢 Módulo 6 · Números y mates
+        <span class="badge py-badge">Sem 6</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_06_Python_Numeros/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_06_Python_Numeros/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🔤 Módulo 7 · Texto y cadenas
+        <span class="badge py-badge">Sem 7</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_07_Python_Texto/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_07_Python_Texto/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🚦 Módulo 8 · Decisiones
+        <span class="badge py-badge">Sem 8</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_08_Python_Decisiones/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_08_Python_Decisiones/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🔁 Módulo 9 · Bucles
+        <span class="badge py-badge">Sem 9</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_09_Python_Bucles/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_09_Python_Bucles/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        📦 Módulo 10 · Funciones
+        <span class="badge py-badge">Sem 10</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_10_Python_Funciones/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_10_Python_Funciones/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        📋 Módulo 11 · Listas
+        <span class="badge py-badge">Sem 11</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link teoria" href="#" data-file="Modulo_11_Python_Listas/teoria.md">📖 Teoría</a>
+        <a class="nav-link activ"  href="#" data-file="Modulo_11_Python_Listas/actividades.md">🎯 Actividades</a>
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-header">
+        🏆 Módulo 12 · Proyecto Final
+        <span class="badge py-badge">Sem 12</span>
+      </div>
+      <div class="nav-sub">
+        <a class="nav-link project" href="#" data-file="Modulo_12_Proyecto_Final/proyecto_final.md">🎮 Proyecto Final</a>
+      </div>
+    </div>
+  </div>
+
+  <div style="padding: 20px 16px; font-size: .7rem; color: #4a7aaa; border-top: 1px solid #1e3a5f; margin-top: auto;">
+    Curso Logo y Python · Para niños 10 años<br>
+    12 semanas · ~40 horas · Nivel cero
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER MÓVIL
+═══════════════════════════════════════════════════════════════ -->
+<header id="mobile-header">
+  <button id="menu-btn" aria-label="Abrir menú">☰</button>
+  <span id="mobile-title">🐢 Curso Logo y Python</span>
+</header>
+
+<div id="overlay"></div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CONTENIDO PRINCIPAL
+═══════════════════════════════════════════════════════════════ -->
+<main id="main">
+  <div id="content-area">
+
+    <!-- Spinner de carga -->
+    <div id="spinner">⏳ Cargando...</div>
+
+    <!-- Breadcrumb -->
+    <div id="breadcrumb" style="display:none">
+      <a href="#" id="bc-home">🏠 Inicio</a>
+      <span>›</span>
+      <span id="bc-current"></span>
+    </div>
+
+    <!-- Contenido Markdown -->
+    <div id="md-content" style="display:none"></div>
+
+    <!-- Navegación inferior -->
+    <div id="page-nav" style="display:none">
+      <a class="nav-btn prev" id="btn-prev" href="#" style="display:none">
+        ← <span><span class="nav-btn-label">Anterior</span><span id="prev-title"></span></span>
+      </a>
+      <a class="nav-btn next" id="btn-next" href="#" style="display:none">
+        <span><span class="nav-btn-label">Siguiente</span><span id="next-title"></span></span> →
+      </a>
+    </div>
+
+    <!-- Pantalla de bienvenida -->
+    <div id="welcome">
+      <span class="hero-emoji">🐢🐍</span>
+      <h1>¡Aprende a programar!</h1>
+      <p>Curso de Logo y Python para niños. Desde cero hasta crear tu propio videojuego.</p>
+
+      <div class="card-grid">
+        <a class="card info-card" href="#" data-file="README.md">
+          <span class="card-icon">📋</span>
+          <h3>Presentación</h3>
+          <p>¿De qué trata el curso y qué aprenderás?</p>
+        </a>
+        <a class="card info-card" href="#" data-file="PLANNING.md">
+          <span class="card-icon">📅</span>
+          <h3>Planning</h3>
+          <p>Plan semana a semana durante 12 semanas.</p>
+        </a>
+        <a class="card logo-card" href="#" data-file="Modulo_00_Bienvenida/teoria.md">
+          <span class="card-icon">🐢</span>
+          <h3>Empezar Logo</h3>
+          <p>Módulo 0: Bienvenida y configuración inicial.</p>
+        </a>
+        <a class="card py-card" href="#" data-file="Modulo_05_Python_Hola_Variables/teoria.md">
+          <span class="card-icon">🐍</span>
+          <h3>Empezar Python</h3>
+          <p>Módulo 5: Tu primer programa en Python.</p>
+        </a>
+        <a class="card info-card" href="#" data-file="Hoja_de_Referencia_Rapida.md">
+          <span class="card-icon">📄</span>
+          <h3>Referencia rápida</h3>
+          <p>Todos los comandos en una sola página.</p>
+        </a>
+        <a class="card info-card" href="#" data-file="Recursos_y_Paginas_Web.md">
+          <span class="card-icon">🌐</span>
+          <h3>Recursos web</h3>
+          <p>Páginas para seguir practicando.</p>
+        </a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════════════════════════ -->
+<script>
+  // ── Configurar marked.js ──────────────────────────────────
+  marked.setOptions({
+    highlight: function(code, lang) {
+      if (lang && hljs.getLanguage(lang)) {
+        return hljs.highlight(code, { language: lang }).value;
+      }
+      return hljs.highlightAuto(code).value;
+    },
+    breaks: true,
+    gfm: true
+  });
+
+  // ── Lista plana de todas las páginas (para nav prev/next) ─
+  const ALL_PAGES = [
+    { file: 'README.md',                                                      label: '🏠 Presentación' },
+    { file: 'PLANNING.md',                                                     label: '📅 Planning' },
+    { file: 'Modulo_00_Bienvenida/teoria.md',                                  label: 'M0 · Teoría: Bienvenida' },
+    { file: 'Modulo_01_Logo_Comandos_Basicos/teoria.md',                       label: 'M1 · Teoría: Comandos básicos' },
+    { file: 'Modulo_01_Logo_Comandos_Basicos/actividades.md',                  label: 'M1 · Actividades' },
+    { file: 'Modulo_02_Logo_Figuras_Colores/teoria.md',                        label: 'M2 · Teoría: Figuras y colores' },
+    { file: 'Modulo_02_Logo_Figuras_Colores/actividades.md',                   label: 'M2 · Actividades' },
+    { file: 'Modulo_03_Logo_Repeticion_Procedimientos/teoria.md',              label: 'M3 · Teoría: Repetición' },
+    { file: 'Modulo_03_Logo_Repeticion_Procedimientos/actividades.md',         label: 'M3 · Actividades' },
+    { file: 'Modulo_04_Proyecto_Logo/proyecto.md',                             label: 'M4 · Proyecto Logo' },
+    { file: 'Modulo_05_Python_Hola_Variables/teoria.md',                       label: 'M5 · Teoría: Hola Python' },
+    { file: 'Modulo_05_Python_Hola_Variables/actividades.md',                  label: 'M5 · Actividades' },
+    { file: 'Modulo_06_Python_Numeros/teoria.md',                              label: 'M6 · Teoría: Números' },
+    { file: 'Modulo_06_Python_Numeros/actividades.md',                         label: 'M6 · Actividades' },
+    { file: 'Modulo_07_Python_Texto/teoria.md',                                label: 'M7 · Teoría: Texto' },
+    { file: 'Modulo_07_Python_Texto/actividades.md',                           label: 'M7 · Actividades' },
+    { file: 'Modulo_08_Python_Decisiones/teoria.md',                           label: 'M8 · Teoría: Decisiones' },
+    { file: 'Modulo_08_Python_Decisiones/actividades.md',                      label: 'M8 · Actividades' },
+    { file: 'Modulo_09_Python_Bucles/teoria.md',                               label: 'M9 · Teoría: Bucles' },
+    { file: 'Modulo_09_Python_Bucles/actividades.md',                          label: 'M9 · Actividades' },
+    { file: 'Modulo_10_Python_Funciones/teoria.md',                            label: 'M10 · Teoría: Funciones' },
+    { file: 'Modulo_10_Python_Funciones/actividades.md',                       label: 'M10 · Actividades' },
+    { file: 'Modulo_11_Python_Listas/teoria.md',                               label: 'M11 · Teoría: Listas' },
+    { file: 'Modulo_11_Python_Listas/actividades.md',                          label: 'M11 · Actividades' },
+    { file: 'Modulo_12_Proyecto_Final/proyecto_final.md',                      label: 'M12 · Proyecto Final' },
+    { file: 'Hoja_de_Referencia_Rapida.md',                                    label: '📄 Referencia rápida' },
+    { file: 'Recursos_y_Paginas_Web.md',                                       label: '🌐 Recursos web' },
+  ];
+
+  // ── Estado de la app ──────────────────────────────────────
+  let currentFile = null;
+
+  // ── Elementos del DOM ────────────────────────────────────
+  const sidebar     = document.getElementById('sidebar');
+  const overlay     = document.getElementById('overlay');
+  const menuBtn     = document.getElementById('menu-btn');
+  const welcome     = document.getElementById('welcome');
+  const mdContent   = document.getElementById('md-content');
+  const spinner     = document.getElementById('spinner');
+  const breadcrumb  = document.getElementById('breadcrumb');
+  const bcCurrent   = document.getElementById('bc-current');
+  const pageNav     = document.getElementById('page-nav');
+  const btnPrev     = document.getElementById('btn-prev');
+  const btnNext     = document.getElementById('btn-next');
+  const prevTitle   = document.getElementById('prev-title');
+  const nextTitle   = document.getElementById('next-title');
+
+  // ── Abrir/cerrar menú móvil ───────────────────────────────
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+  overlay.addEventListener('click', closeSidebar);
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    overlay.classList.remove('show');
+  }
+
+  // ── Cargar y mostrar un archivo Markdown ─────────────────
+  async function loadPage(filePath) {
+    welcome.style.display   = 'none';
+    mdContent.style.display = 'none';
+    pageNav.style.display   = 'none';
+    breadcrumb.style.display = 'none';
+    spinner.style.display   = 'block';
+
+    try {
+      const response = await fetch(filePath);
+      if (!response.ok) throw new Error(`No se pudo cargar: ${filePath}`);
+      const markdown = await response.text();
+
+      mdContent.innerHTML = marked.parse(markdown);
+      mdContent.querySelectorAll('pre code').forEach(el => { hljs.highlightElement(el); });
+      mdContent.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.removeAttribute('disabled'); });
+
+      const page = ALL_PAGES.find(p => p.file === filePath);
+      bcCurrent.textContent = page ? page.label : filePath;
+      breadcrumb.style.display = 'flex';
+
+      const idx = ALL_PAGES.findIndex(p => p.file === filePath);
+      if (idx > 0) {
+        btnPrev.style.display = 'flex';
+        prevTitle.textContent = ALL_PAGES[idx - 1].label;
+        btnPrev.dataset.file  = ALL_PAGES[idx - 1].file;
+      } else { btnPrev.style.display = 'none'; }
+      if (idx >= 0 && idx < ALL_PAGES.length - 1) {
+        btnNext.style.display = 'flex';
+        nextTitle.textContent = ALL_PAGES[idx + 1].label;
+        btnNext.dataset.file  = ALL_PAGES[idx + 1].file;
+      } else { btnNext.style.display = 'none'; }
+
+      pageNav.style.display   = 'flex';
+      mdContent.style.display = 'block';
+      document.querySelectorAll('.nav-link').forEach(el => {
+        el.classList.toggle('active', el.dataset.file === filePath);
+      });
+      const hash = '#' + encodeURIComponent(filePath);
+      history.pushState({ file: filePath }, '', hash);
+      currentFile = filePath;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      closeSidebar();
+
+    } catch (err) {
+      mdContent.innerHTML = `
+        <div style="text-align:center;padding:60px 20px">
+          <div style="font-size:4rem">😕</div>
+          <h2 style="margin:16px 0 8px">No se pudo cargar el archivo</h2>
+          <p style="color:#64748b">${err.message}</p>
+        </div>`;
+      mdContent.style.display = 'block';
+    }
+    spinner.style.display = 'none';
+  }
+
+  function showWelcome() {
+    welcome.style.display   = 'block';
+    mdContent.style.display = 'none';
+    pageNav.style.display   = 'none';
+    breadcrumb.style.display = 'none';
+    spinner.style.display   = 'none';
+    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+    history.pushState({}, '', '#');
+    currentFile = null;
+    closeSidebar();
+  }
+
+  document.addEventListener('click', e => {
+    const link = e.target.closest('[data-file]');
+    if (link) { e.preventDefault(); loadPage(link.dataset.file); }
+    if (e.target.id === 'bc-home') { e.preventDefault(); showWelcome(); }
+    if (e.target.closest('#btn-prev')) { e.preventDefault(); loadPage(btnPrev.dataset.file); }
+    if (e.target.closest('#btn-next')) { e.preventDefault(); loadPage(btnNext.dataset.file); }
+  });
+
+  window.addEventListener('popstate', e => {
+    if (e.state && e.state.file) loadPage(e.state.file);
+    else showWelcome();
+  });
+
+  function loadFromHash() {
+    const hash = decodeURIComponent(window.location.hash.slice(1));
+    if (hash && hash !== '#') loadPage(hash);
+  }
+  loadFromHash();
+</script>
+
+</body>
+</html>
