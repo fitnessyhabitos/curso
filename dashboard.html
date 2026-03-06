@@ -266,6 +266,11 @@
           progreso = data.progreso || {};
           nombre   = data.nombre   || user.email.split('@')[0];
           avatar   = data.avatar   || '🦁';
+          // Aplicar tema guardado en Firestore
+          if (data.tema && data.tema !== 'clasico') {
+            document.documentElement.setAttribute('data-theme', data.tema);
+            localStorage.setItem('tema', data.tema);
+          }
         } else {
           // Cuenta auth sin documento Firestore (registrado antes de crear la BD)
           // → crear el documento ahora automáticamente

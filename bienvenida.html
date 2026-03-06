@@ -743,7 +743,6 @@
 
   // ── Cargar y mostrar un archivo Markdown ─────────────────
   async function loadPage(filePath) {
-    // Mostrar spinner
     welcome.style.display   = 'none';
     mdContent.style.display = 'none';
     pageNav.style.display   = 'none';
@@ -755,58 +754,35 @@
       if (!response.ok) throw new Error(`No se pudo cargar: ${filePath}`);
       const markdown = await response.text();
 
-      // Renderizar Markdown
       mdContent.innerHTML = marked.parse(markdown);
+      mdContent.querySelectorAll('pre code').forEach(el => { hljs.highlightElement(el); });
+      mdContent.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.removeAttribute('disabled'); });
 
-      // Resaltar código
-      mdContent.querySelectorAll('pre code').forEach(el => {
-        hljs.highlightElement(el);
-      });
-
-      // Hacer los checkboxes interactivos
-      mdContent.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.removeAttribute('disabled');
-      });
-
-      // Mostrar breadcrumb
       const page = ALL_PAGES.find(p => p.file === filePath);
       bcCurrent.textContent = page ? page.label : filePath;
       breadcrumb.style.display = 'flex';
 
-      // Mostrar nav prev/next
       const idx = ALL_PAGES.findIndex(p => p.file === filePath);
       if (idx > 0) {
         btnPrev.style.display = 'flex';
         prevTitle.textContent = ALL_PAGES[idx - 1].label;
         btnPrev.dataset.file  = ALL_PAGES[idx - 1].file;
-      } else {
-        btnPrev.style.display = 'none';
-      }
+      } else { btnPrev.style.display = 'none'; }
       if (idx >= 0 && idx < ALL_PAGES.length - 1) {
         btnNext.style.display = 'flex';
         nextTitle.textContent = ALL_PAGES[idx + 1].label;
         btnNext.dataset.file  = ALL_PAGES[idx + 1].file;
-      } else {
-        btnNext.style.display = 'none';
-      }
+      } else { btnNext.style.display = 'none'; }
 
       pageNav.style.display   = 'flex';
       mdContent.style.display = 'block';
-
-      // Marcar enlace activo en sidebar
       document.querySelectorAll('.nav-link').forEach(el => {
         el.classList.toggle('active', el.dataset.file === filePath);
       });
-
-      // Actualizar URL sin recargar
       const hash = '#' + encodeURIComponent(filePath);
       history.pushState({ file: filePath }, '', hash);
       currentFile = filePath;
-
-      // Scroll al inicio
       window.scrollTo({ top: 0, behavior: 'smooth' });
-
-      // Cerrar sidebar en móvil
       closeSidebar();
 
     } catch (err) {
@@ -815,18 +791,12 @@
           <div style="font-size:4rem">😕</div>
           <h2 style="margin:16px 0 8px">No se pudo cargar el archivo</h2>
           <p style="color:#64748b">${err.message}</p>
-          <p style="color:#64748b;margin-top:8px;font-size:.85rem">
-            Si estás abriendo el archivo localmente (file://), necesitas un servidor web.<br>
-            Sube el curso a GitHub Pages para que funcione correctamente.
-          </p>
         </div>`;
       mdContent.style.display = 'block';
     }
-
     spinner.style.display = 'none';
   }
 
-  // ── Mostrar pantalla de bienvenida ───────────────────────
   function showWelcome() {
     welcome.style.display   = 'block';
     mdContent.style.display = 'none';
@@ -839,46 +809,23 @@
     closeSidebar();
   }
 
-  // ── Delegación de eventos para todos los enlaces ─────────
   document.addEventListener('click', e => {
     const link = e.target.closest('[data-file]');
-    if (link) {
-      e.preventDefault();
-      loadPage(link.dataset.file);
-    }
-    // Breadcrumb home
-    if (e.target.id === 'bc-home') {
-      e.preventDefault();
-      showWelcome();
-    }
-    // Botones prev/next
-    if (e.target.closest('#btn-prev')) {
-      e.preventDefault();
-      loadPage(btnPrev.dataset.file);
-    }
-    if (e.target.closest('#btn-next')) {
-      e.preventDefault();
-      loadPage(btnNext.dataset.file);
-    }
+    if (link) { e.preventDefault(); loadPage(link.dataset.file); }
+    if (e.target.id === 'bc-home') { e.preventDefault(); showWelcome(); }
+    if (e.target.closest('#btn-prev')) { e.preventDefault(); loadPage(btnPrev.dataset.file); }
+    if (e.target.closest('#btn-next')) { e.preventDefault(); loadPage(btnNext.dataset.file); }
   });
 
-  // ── Navegar con el botón atrás del navegador ─────────────
   window.addEventListener('popstate', e => {
-    if (e.state && e.state.file) {
-      loadPage(e.state.file);
-    } else {
-      showWelcome();
-    }
+    if (e.state && e.state.file) loadPage(e.state.file);
+    else showWelcome();
   });
 
-  // ── Cargar la página desde el hash de la URL ─────────────
   function loadFromHash() {
     const hash = decodeURIComponent(window.location.hash.slice(1));
-    if (hash && hash !== '#') {
-      loadPage(hash);
-    }
+    if (hash && hash !== '#') loadPage(hash);
   }
-
   loadFromHash();
 </script>
 

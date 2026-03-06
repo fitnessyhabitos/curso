@@ -210,16 +210,15 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
       constructor() {
         this.W = canvas.width;
         this.H = canvas.height;
-        this.procs = {};   // procedimientos definidos por el usuario
-        this.vars  = {};   // variables globales
+        this.procs = {};
+        this.vars  = {};
         this.reset();
       }
 
-      // Volver al estado inicial (sin borrar procedimientos)
       reset() {
         this.x  = this.W / 2;
         this.y  = this.H / 2;
-        this.heading = 0;   // 0 = norte (arriba), crece en sentido horario
+        this.heading = 0;
         this.pd = true;
         this.color = '#1E293B';
         this.pw  = 2;
@@ -227,7 +226,6 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
         ctx.fillRect(0, 0, this.W, this.H);
       }
 
-      // Mover la tortuga n pasos (negativo = atrás)
       move(n) {
         const rad = (this.heading - 90) * Math.PI / 180;
         const nx  = this.x + n * Math.cos(rad);
@@ -246,32 +244,24 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
         this.y = ny;
       }
 
-      // ── Colores por número (compatible con FMSLogo) ──
       numColor(n) {
         const C = ['#000','#00C','#080','#088','#C00','#808','#880','#FFF',
                    '#854','#F80','#555','#FAA','#AFA','#AAF','#FA0','#0FF'];
         return C[Math.floor(Math.abs(n)) % C.length];
       }
 
-      // ── TOKENIZADOR ──
       tokenize(src) {
         const toks = [];
         const up   = src.toUpperCase();
         let i = 0;
         while (i < up.length) {
-          // Ignorar espacios
           if (/\s/.test(up[i])) { i++; continue; }
-          // Comentario ;
           if (up[i] === ';') { while (i < up.length && up[i] !== '\n') i++; continue; }
-          // Corchetes
           if (up[i] === '[') { toks.push({ t:'[' }); i++; continue; }
           if (up[i] === ']') { toks.push({ t:']' }); i++; continue; }
-          // Paréntesis (para expresiones)
           if (up[i] === '(') { toks.push({ t:'(' }); i++; continue; }
           if (up[i] === ')') { toks.push({ t:')' }); i++; continue; }
-          // Operadores aritméticos sueltos
           if (['+','-','*','/','=','<','>'].includes(up[i])) {
-            // '-' puede ser inicio de número negativo
             if (up[i] === '-' && i+1 < up.length && /\d/.test(up[i+1])) {
               let n = '-'; i++;
               while (i < up.length && /[\d.]/.test(up[i])) n += up[i++];
@@ -279,27 +269,23 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
             }
             toks.push({ t:'op', v: up[i++] }); continue;
           }
-          // Literal de cadena "PALABRA
           if (up[i] === '"') {
             i++;
             let w = '';
             while (i < up.length && !/[\s\[\]()]/.test(up[i])) w += up[i++];
             toks.push({ t:'str', v: w }); continue;
           }
-          // Variable :nombre
           if (up[i] === ':') {
             i++;
             let w = '';
             while (i < up.length && /\w/.test(up[i])) w += up[i++];
             toks.push({ t:'var', v: w }); continue;
           }
-          // Número
           if (/\d/.test(up[i]) || (up[i]==='.' && /\d/.test(up[i+1]||''))) {
             let n = '';
             while (i < up.length && /[\d.]/.test(up[i])) n += up[i++];
             toks.push({ t:'num', v: parseFloat(n) }); continue;
           }
-          // Palabra / comando
           let w = '';
           while (i < up.length && !/[\s\[\]();+\-*\/=<>]/.test(up[i])) w += up[i++];
           if (w) toks.push({ t:'word', v: w });
@@ -307,43 +293,23 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
         return toks;
       }
 
-      // ── Leer un valor numérico (número, variable, expresión básica) ──
       readVal(toks, i) {
         const t = toks[i];
         if (!t) throw new Error('Se esperaba un número pero no hay más código');
-
         if (t.t === 'num') return { v: t.v, i: i + 1 };
-
         if (t.t === 'var') {
           if (!(t.v in this.vars)) throw new Error(`Variable no definida: :${t.v}\nUsa MAKE "${t.v} valor primero`);
           return { v: this.vars[t.v], i: i + 1 };
         }
-
-        // Expresión aritmética sencilla: A OP B
-        // (sin paréntesis; para el curso básico esto es suficiente)
         if (t.t === 'word') {
-          // ¿Es una función aritmética de Logo? SIN / COS / SQRT
-          if (t.v === 'SIN') {
-            const r = this.readVal(toks, i + 1);
-            return { v: Math.sin(r.v * Math.PI / 180), i: r.i };
-          }
-          if (t.v === 'COS') {
-            const r = this.readVal(toks, i + 1);
-            return { v: Math.cos(r.v * Math.PI / 180), i: r.i };
-          }
-          if (t.v === 'SQRT') {
-            const r = this.readVal(toks, i + 1);
-            return { v: Math.sqrt(r.v), i: r.i };
-          }
-          if (t.v === 'RANDOM') {
-            const r = this.readVal(toks, i + 1);
-            return { v: Math.floor(Math.random() * r.v), i: r.i };
-          }
+          if (t.v === 'SIN')    { const r = this.readVal(toks, i + 1); return { v: Math.sin(r.v * Math.PI / 180), i: r.i }; }
+          if (t.v === 'COS')    { const r = this.readVal(toks, i + 1); return { v: Math.cos(r.v * Math.PI / 180), i: r.i }; }
+          if (t.v === 'SQRT')   { const r = this.readVal(toks, i + 1); return { v: Math.sqrt(r.v), i: r.i }; }
+          if (t.v === 'RANDOM') { const r = this.readVal(toks, i + 1); return { v: Math.floor(Math.random() * r.v), i: r.i }; }
         }
         throw new Error(`Se esperaba un número, encontré: "${t.v || t.t}"`);
       }
 
-      // Después de leer un valor, ¿le sigue un operador? Evalúa operación binaria.
       readExpr(toks, i) {
         let { v: left, i: ni } = this.readVal(toks, i);
         while (ni < toks.length && toks[ni].t === 'op') {
@@ -358,7 +324,6 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
         return { v: left, i: ni };
       }
 
-      // ── Leer una lista [...] ──
       readList(toks, i) {
         if (!toks[i] || toks[i].t !== '[') throw new Error('Se esperaba [');
         i++;
@@ -371,7 +336,6 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
         return { list, i };
       }
 
-      // ── Evaluar condición ──
       evalCond(toks, i) {
         const { v: left, i: ni } = this.readExpr(toks, i);
         if (ni >= toks.length || toks[ni].t !== 'op') return { v: !!left, i: ni };
@@ -385,179 +349,65 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
         return { v: result, i: ni2 };
       }
 
-      // ── EJECUTAR lista de tokens (con variables locales opcionales) ──
       run(toks, locals) {
-        // Guardar y restaurar variables locales (scope de procedimientos)
         const saved = {};
         if (locals) {
-          for (const k of Object.keys(locals)) {
-            saved[k] = this.vars[k];
-            this.vars[k] = locals[k];
-          }
+          for (const k of Object.keys(locals)) { saved[k] = this.vars[k]; this.vars[k] = locals[k]; }
         }
-
-        let i = 0;
-        let output = '';
-
+        let i = 0; let output = '';
         try {
           while (i < toks.length) {
             const t = toks[i];
             if (!t) { i++; continue; }
-            if (t.t !== 'word') { i++; continue; } // token de dato suelto, skip
-
+            if (t.t !== 'word') { i++; continue; }
             const cmd = t.v;
-
             switch (cmd) {
-
-              // ──── MOVIMIENTO ────
-              case 'FD': case 'FORWARD': {
-                const r = this.readExpr(toks, i + 1); this.move(r.v); i = r.i; break;
-              }
-              case 'BK': case 'BACK': case 'BACKWARD': {
-                const r = this.readExpr(toks, i + 1); this.move(-r.v); i = r.i; break;
-              }
-              case 'RT': case 'RIGHT': {
-                const r = this.readExpr(toks, i + 1);
-                this.heading = ((this.heading + r.v) % 360 + 360) % 360; i = r.i; break;
-              }
-              case 'LT': case 'LEFT': {
-                const r = this.readExpr(toks, i + 1);
-                this.heading = ((this.heading - r.v) % 360 + 360) % 360; i = r.i; break;
-              }
-              case 'SETH': case 'SETHEADING': {
-                const r = this.readExpr(toks, i + 1);
-                this.heading = ((r.v) % 360 + 360) % 360; i = r.i; break;
-              }
-
-              // ──── LÁPIZ ────
-              case 'PU': case 'PENUP':   { this.pd = false; i++; break; }
-              case 'PD': case 'PENDOWN': { this.pd = true;  i++; break; }
-
-              // ──── PANTALLA ────
-              case 'CS': case 'CLEARSCREEN': {
-                ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, this.W, this.H);
-                this.x = this.W/2; this.y = this.H/2; this.heading = 0; i++; break;
-              }
-              case 'HOME': {
-                this.x = this.W/2; this.y = this.H/2; this.heading = 0; i++; break;
-              }
-              case 'CLEAN': {
-                ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, this.W, this.H); i++; break;
-              }
-
-              // ──── COLORES ────
+              case 'FD': case 'FORWARD':  { const r = this.readExpr(toks, i+1); this.move(r.v);  i = r.i; break; }
+              case 'BK': case 'BACK': case 'BACKWARD': { const r = this.readExpr(toks, i+1); this.move(-r.v); i = r.i; break; }
+              case 'RT': case 'RIGHT':    { const r = this.readExpr(toks, i+1); this.heading = ((this.heading+r.v)%360+360)%360; i = r.i; break; }
+              case 'LT': case 'LEFT':     { const r = this.readExpr(toks, i+1); this.heading = ((this.heading-r.v)%360+360)%360; i = r.i; break; }
+              case 'SETH': case 'SETHEADING': { const r = this.readExpr(toks, i+1); this.heading = ((r.v)%360+360)%360; i = r.i; break; }
+              case 'PU': case 'PENUP':    { this.pd = false; i++; break; }
+              case 'PD': case 'PENDOWN':  { this.pd = true;  i++; break; }
+              case 'CS': case 'CLEARSCREEN': { ctx.fillStyle='#FFFFFF'; ctx.fillRect(0,0,this.W,this.H); this.x=this.W/2; this.y=this.H/2; this.heading=0; i++; break; }
+              case 'HOME':  { this.x=this.W/2; this.y=this.H/2; this.heading=0; i++; break; }
+              case 'CLEAN': { ctx.fillStyle='#FFFFFF'; ctx.fillRect(0,0,this.W,this.H); i++; break; }
               case 'SETPC': case 'SETPENCOLOR': case 'SETCOLOR': {
-                if (toks[i+1] && toks[i+1].t === '[') {
-                  const r = this.readList(toks, i + 1);
-                  const nums = r.list.filter(x => x.t === 'num').map(x => x.v);
-                  this.color = `rgb(${nums[0]||0},${nums[1]||0},${nums[2]||0})`; i = r.i;
-                } else {
-                  const r = this.readExpr(toks, i + 1);
-                  this.color = this.numColor(r.v); i = r.i;
-                }
+                if (toks[i+1] && toks[i+1].t==='[') { const r=this.readList(toks,i+1); const nums=r.list.filter(x=>x.t==='num').map(x=>x.v); this.color=`rgb(${nums[0]||0},${nums[1]||0},${nums[2]||0})`; i=r.i; }
+                else { const r=this.readExpr(toks,i+1); this.color=this.numColor(r.v); i=r.i; }
                 break;
               }
-              case 'SETPW': case 'SETPENWIDTH': case 'SETPENSIZE': {
-                const r = this.readExpr(toks, i + 1);
-                this.pw = Math.max(0.5, r.v); i = r.i; break;
-              }
+              case 'SETPW': case 'SETPENWIDTH': case 'SETPENSIZE': { const r=this.readExpr(toks,i+1); this.pw=Math.max(0.5,r.v); i=r.i; break; }
               case 'SETBG': case 'SETBACKGROUND': {
-                if (toks[i+1] && toks[i+1].t === '[') {
-                  const r = this.readList(toks, i + 1);
-                  const nums = r.list.filter(x => x.t === 'num').map(x => x.v);
-                  ctx.fillStyle = `rgb(${nums[0]||255},${nums[1]||255},${nums[2]||255})`;
-                  ctx.fillRect(0, 0, this.W, this.H); i = r.i;
-                } else {
-                  const r = this.readExpr(toks, i + 1);
-                  ctx.fillStyle = this.numColor(r.v);
-                  ctx.fillRect(0, 0, this.W, this.H); i = r.i;
-                }
+                if (toks[i+1] && toks[i+1].t==='[') { const r=this.readList(toks,i+1); const nums=r.list.filter(x=>x.t==='num').map(x=>x.v); ctx.fillStyle=`rgb(${nums[0]||255},${nums[1]||255},${nums[2]||255})`; ctx.fillRect(0,0,this.W,this.H); i=r.i; }
+                else { const r=this.readExpr(toks,i+1); ctx.fillStyle=this.numColor(r.v); ctx.fillRect(0,0,this.W,this.H); i=r.i; }
                 break;
               }
-
-              // ──── REPEAT ────
-              case 'REPEAT': {
-                const rn  = this.readExpr(toks, i + 1);
-                const cnt = Math.floor(rn.v);
-                const rl  = this.readList(toks, rn.i);
-                for (let rep = 1; rep <= cnt; rep++) {
-                  this.vars['REPCOUNT'] = rep;
-                  this.run(rl.list);
-                }
-                delete this.vars['REPCOUNT'];
-                i = rl.i; break;
-              }
-
-              // ──── DEFINIR PROCEDIMIENTO: TO nombre :p1 :p2 ... body END ────
+              case 'REPEAT': { const rn=this.readExpr(toks,i+1); const cnt=Math.floor(rn.v); const rl=this.readList(toks,rn.i); for(let rep=1;rep<=cnt;rep++){this.vars['REPCOUNT']=rep;this.run(rl.list);} delete this.vars['REPCOUNT']; i=rl.i; break; }
               case 'TO': {
-                if (!toks[i+1] || toks[i+1].t !== 'word')
-                  throw new Error('TO necesita un nombre de procedimiento');
-                const pname = toks[i+1].v;
-                let j = i + 2;
-                const params = [];
-                while (j < toks.length && toks[j].t === 'var') { params.push(toks[j].v); j++; }
-                const body = [];
-                while (j < toks.length && !(toks[j].t === 'word' && toks[j].v === 'END')) {
-                  body.push(toks[j++]);
-                }
-                this.procs[pname] = { params, body };
-                i = j + 1; // saltar END
-                break;
+                if (!toks[i+1]||toks[i+1].t!=='word') throw new Error('TO necesita un nombre de procedimiento');
+                const pname=toks[i+1].v; let j=i+2; const params=[]; const body=[];
+                while(j<toks.length&&toks[j].t==='var'){params.push(toks[j].v);j++;}
+                while(j<toks.length&&!(toks[j].t==='word'&&toks[j].v==='END')){body.push(toks[j++]);}
+                this.procs[pname]={params,body}; i=j+1; break;
               }
-
-              // ──── VARIABLES: MAKE "var valor ────
               case 'MAKE': {
-                if (!toks[i+1] || toks[i+1].t !== 'str')
-                  throw new Error('MAKE necesita un nombre entre comillas: MAKE "nombre valor');
-                const vname = toks[i+1].v;
-                const rv = this.readExpr(toks, i + 2);
-                this.vars[vname] = rv.v; i = rv.i; break;
+                if (!toks[i+1]||toks[i+1].t!=='str') throw new Error('MAKE necesita un nombre entre comillas: MAKE "nombre valor');
+                const vname=toks[i+1].v; const rv=this.readExpr(toks,i+2); this.vars[vname]=rv.v; i=rv.i; break;
               }
-
-              // ──── IF / IFELSE ────
-              case 'IF': {
-                const rc = this.evalCond(toks, i + 1);
-                const rl = this.readList(toks, rc.i);
-                if (rc.v) this.run(rl.list);
-                i = rl.i; break;
-              }
-              case 'IFELSE': {
-                const rc  = this.evalCond(toks, i + 1);
-                const rlt = this.readList(toks, rc.i);
-                const rlf = this.readList(toks, rlt.i);
-                this.run(rc.v ? rlt.list : rlf.list);
-                i = rlf.i; break;
-              }
-
-              // ──── PRINT / SHOW ────
+              case 'IF':    { const rc=this.evalCond(toks,i+1); const rl=this.readList(toks,rc.i); if(rc.v) this.run(rl.list); i=rl.i; break; }
+              case 'IFELSE': { const rc=this.evalCond(toks,i+1); const rlt=this.readList(toks,rc.i); const rlf=this.readList(toks,rlt.i); this.run(rc.v?rlt.list:rlf.list); i=rlf.i; break; }
               case 'PRINT': case 'PR': case 'SHOW': {
-                if (toks[i+1] && toks[i+1].t === '[') {
-                  const rl = this.readList(toks, i+1);
-                  output += rl.list.map(x => x.v ?? '').join(' ') + '\n'; i = rl.i;
-                } else {
-                  try {
-                    const rv = this.readExpr(toks, i + 1);
-                    output += rv.v + '\n'; i = rv.i;
-                  } catch { i++; }
-                }
+                if (toks[i+1]&&toks[i+1].t==='[') { const rl=this.readList(toks,i+1); output+=rl.list.map(x=>x.v??'').join(' ')+'\n'; i=rl.i; }
+                else { try { const rv=this.readExpr(toks,i+1); output+=rv.v+'\n'; i=rv.i; } catch { i++; } }
                 break;
               }
-
-              // ──── WAIT (ignorar, no puede hacerse síncrono) ────
-              case 'WAIT': { const r = this.readExpr(toks, i + 1); i = r.i; break; }
-
-              // ──── LLAMADA A PROCEDIMIENTO ────
+              case 'WAIT': { const r=this.readExpr(toks,i+1); i=r.i; break; }
               default: {
                 if (cmd in this.procs) {
-                  const proc = this.procs[cmd];
-                  let j = i + 1;
-                  const args = {};
-                  for (const p of proc.params) {
-                    const rv = this.readExpr(toks, j);
-                    args[p] = rv.v; j = rv.i;
-                  }
-                  this.run(proc.body, args);
-                  i = j;
+                  const proc=this.procs[cmd]; let j=i+1; const args={};
+                  for(const p of proc.params){const rv=this.readExpr(toks,j);args[p]=rv.v;j=rv.i;}
+                  this.run(proc.body,args); i=j;
                 } else {
                   throw new Error(`Comando no reconocido: "${cmd}"\n¿Lo escribiste correctamente?`);
                 }
@@ -565,39 +415,28 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
             }
           }
         } finally {
-          // Restaurar variables del ámbito anterior
           if (locals) {
             for (const k of Object.keys(locals)) {
-              if (saved[k] === undefined) delete this.vars[k];
-              else this.vars[k] = saved[k];
+              if (saved[k]===undefined) delete this.vars[k]; else this.vars[k]=saved[k];
             }
           }
         }
         return output;
       }
 
-      execute(src) {
-        const toks = this.tokenize(src);
-        return this.run(toks);
-      }
+      execute(src) { return this.run(this.tokenize(src)); }
     }
 
-    // Instancia global del VM
     const logo = new LogoVM();
-
-    // Dibujar estado inicial
     logo.reset();
 
-    // ── Ejecutar código ──
     window.runCode = function() {
       const code = document.getElementById('code').value;
       const errPanel = document.getElementById('error-panel');
       const runInfo  = document.getElementById('run-info');
       errPanel.style.display = 'none';
       runInfo.textContent = '⏳ Ejecutando...';
-
       try {
-        // Limpiar pantalla antes de cada ejecución
         logo.reset();
         const out = logo.execute(code);
         runInfo.textContent = '✅ Listo';
@@ -609,7 +448,6 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
       }
     };
 
-    // ── Limpiar ──
     window.clearAll = function() {
       document.getElementById('code').value = '';
       document.getElementById('error-panel').style.display = 'none';
@@ -617,126 +455,33 @@ REPEAT 4 [FD 100 RT 90]"></textarea>
       document.getElementById('run-info').textContent = 'Haz clic en ▶ Ejecutar';
     };
 
-    // ── Ejemplos ──
     const EXAMPLES = {
-      cuadrado: `; ⬜ Un cuadrado azul
-CS
-SETPC 1
-SETPW 3
-REPEAT 4 [FD 100 RT 90]`,
-
-      triangulo: `; 🔺 Triángulo verde
-CS
-SETPC 2
-SETPW 3
-REPEAT 3 [FD 120 RT 120]`,
-
-      circulo: `; ⭕ Aproximación de círculo
-CS
-SETPC 4
-SETPW 2
-REPEAT 36 [FD 10 RT 10]`,
-
-      estrella: `; ⭐ Estrella de 5 puntas
-CS
-SETPC 6
-SETPW 3
-REPEAT 5 [FD 120 RT 144]`,
-
-      espiral: `; 🌀 Espiral de colores
-CS
-SETPW 2
-MAKE "n 5
-MAKE "c 0
-REPEAT 30 [
-  SETPC :c
-  FD :n
-  RT 90
-  MAKE "n :n + 5
-  MAKE "c :c + 1
-]`,
-
-      flor: `; 🌸 Flor con pétalos
-CS
-SETPC 4
-SETPW 2
-TO PETALO
-  REPEAT 2 [FD 80 RT 45 FD 80 RT 135]
-END
-
-REPEAT 8 [PETALO RT 45]`,
-
-      casa: `; 🏠 Una casa sencilla
-CS
-SETPW 3
-
-; Paredes (cuadrado)
-SETPC 8
-REPEAT 4 [FD 100 RT 90]
-
-; Tejado (triángulo)
-SETPC 4
-FD 100
-RT 30
-FD 100
-RT 120
-FD 100`,
-
-      procedimiento: `; ⚙️ Usando procedimientos propios
-CS
-
-; Definir un cuadrado de tamaño variable
-TO CUADRADO :lado
-  REPEAT 4 [FD :lado RT 90]
-END
-
-; Dibujar cuadrados de diferentes tamaños
-SETPC 1
-CUADRADO 40
-
-PU FD 50 PD
-SETPC 2
-CUADRADO 60
-
-PU FD 70 PD
-SETPC 4
-CUADRADO 80`
+      cuadrado: `; ⬜ Un cuadrado azul\nCS\nSETPC 1\nSETPW 3\nREPEAT 4 [FD 100 RT 90]`,
+      triangulo: `; 🔺 Triángulo verde\nCS\nSETPC 2\nSETPW 3\nREPEAT 3 [FD 120 RT 120]`,
+      circulo: `; ⭕ Aproximación de círculo\nCS\nSETPC 4\nSETPW 2\nREPEAT 36 [FD 10 RT 10]`,
+      estrella: `; ⭐ Estrella de 5 puntas\nCS\nSETPC 6\nSETPW 3\nREPEAT 5 [FD 120 RT 144]`,
+      espiral: `; 🌀 Espiral de colores\nCS\nSETPW 2\nMAKE "n 5\nMAKE "c 0\nREPEAT 30 [\n  SETPC :c\n  FD :n\n  RT 90\n  MAKE "n :n + 5\n  MAKE "c :c + 1\n]`,
+      flor: `; 🌸 Flor con pétalos\nCS\nSETPC 4\nSETPW 2\nTO PETALO\n  REPEAT 2 [FD 80 RT 45 FD 80 RT 135]\nEND\n\nREPEAT 8 [PETALO RT 45]`,
+      casa: `; 🏠 Una casa sencilla\nCS\nSETPW 3\n\n; Paredes (cuadrado)\nSETPC 8\nREPEAT 4 [FD 100 RT 90]\n\n; Tejado (triángulo)\nSETPC 4\nFD 100\nRT 30\nFD 100\nRT 120\nFD 100`,
+      procedimiento: `; ⚙️ Usando procedimientos propios\nCS\n\nTO CUADRADO :lado\n  REPEAT 4 [FD :lado RT 90]\nEND\n\nSETPC 1\nCUADRADO 40\n\nPU FD 50 PD\nSETPC 2\nCUADRADO 60\n\nPU FD 70 PD\nSETPC 4\nCUADRADO 80`
     };
 
     window.loadEx = name => {
       document.getElementById('code').value = EXAMPLES[name] || '';
       document.getElementById('examples-menu').classList.remove('open');
     };
-
-    window.toggleExamples = () => {
-      document.getElementById('examples-menu').classList.toggle('open');
-    };
+    window.toggleExamples = () => document.getElementById('examples-menu').classList.toggle('open');
     document.addEventListener('click', e => {
       if (!e.target.closest('.dropdown')) document.getElementById('examples-menu').classList.remove('open');
     });
-
-    // Ctrl+Enter ejecutar
     document.getElementById('code').addEventListener('keydown', e => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); window.runCode(); }
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        const ta = e.target, s = ta.selectionStart;
-        ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(ta.selectionEnd);
-        ta.selectionStart = ta.selectionEnd = s + 2;
-      }
+      if ((e.ctrlKey||e.metaKey)&&e.key==='Enter') { e.preventDefault(); window.runCode(); }
+      if (e.key==='Tab') { e.preventDefault(); const ta=e.target,s=ta.selectionStart; ta.value=ta.value.substring(0,s)+'  '+ta.value.substring(ta.selectionEnd); ta.selectionStart=ta.selectionEnd=s+2; }
     });
-
-    // ─── FIREBASE (guardar/cargar código) ───────────────────────────
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      setTimeout(() => t.classList.remove('show'), 2500);
-    }
-    function setSaveStatus(t) { document.getElementById('save-status').textContent = t; }
+    function showToast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2500); }
+    function setSaveStatus(t) { document.getElementById('save-status').textContent=t; }
   </script>
 
-  <!-- Firebase (módulo independiente para no mezclar con el intérprete) -->
   <script type="module">
     import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth }                               from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
@@ -754,7 +499,6 @@ CUADRADO 80`
     const db   = getFirestore(app);
     let uid = null;
 
-    // authStateReady() espera a que Firebase resuelva la sesión real (evita bucles)
     auth.authStateReady().then(async () => {
       const user = auth.currentUser;
       if (!user) { location.href = 'index.html'; return; }
@@ -784,7 +528,6 @@ CUADRADO 80`
       }
     };
 
-    // Autoguardado cada 60 segundos
     setInterval(() => { if (uid) window.saveCode(); }, 60000);
   </script>
 </body>
