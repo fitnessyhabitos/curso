@@ -12,6 +12,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
 
+  <!-- Aplicar tema guardado ANTES de renderizar (evita destello blanco) -->
+  <script>(function(){ var t=localStorage.getItem('tema'); if(t&&t!=='clasico') document.documentElement.setAttribute('data-theme',t); })();</script>
+  <link rel="stylesheet" href="themes.css">
+
   <style>
     /* ─── RESET Y BASE ─────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -403,6 +407,205 @@
       #sidebar, #mobile-header, #page-nav { display: none; }
       #main { margin-left: 0; }
     }
+
+    /* ══════════════════════════════════════════════════════════
+       OVERRIDES DE TEMAS OSCUROS — deben ir al final para ganar
+       al CSS base de esta página
+       ══════════════════════════════════════════════════════════ */
+
+    /* ── CYBERPUNK ─────────────────────────────────────────── */
+    [data-theme="cyberpunk"] body {
+      background: #0A0A0A !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] #sidebar {
+      background: #0D0D0D !important;
+      border-right: 1px solid rgba(255,0,63,0.3) !important;
+    }
+    [data-theme="cyberpunk"] .sidebar-header {
+      background: #050505 !important;
+      border-bottom-color: rgba(255,0,63,0.2) !important;
+    }
+    [data-theme="cyberpunk"] .sidebar-header h1 {
+      color: #FF003F !important;
+      text-shadow: 0 0 10px rgba(255,0,63,0.5) !important;
+    }
+    [data-theme="cyberpunk"] .sidebar-header p { color: #555 !important; }
+    [data-theme="cyberpunk"] .nav-section-title { color: rgba(255,0,63,0.55) !important; }
+    [data-theme="cyberpunk"] .nav-group-header  { color: #D1D5DB !important; }
+    [data-theme="cyberpunk"] .nav-group-header:hover { background: rgba(255,0,63,0.08) !important; }
+    [data-theme="cyberpunk"] .nav-link          { color: #9CA3AF !important; }
+    [data-theme="cyberpunk"] .nav-link:hover    { background: rgba(255,0,63,0.08) !important; color: #FF003F !important; }
+    [data-theme="cyberpunk"] .nav-link.active   { background: #FF003F !important; color: #fff !important; }
+    [data-theme="cyberpunk"] .nav-link.teoria   { border-left-color: #FF003F !important; }
+    [data-theme="cyberpunk"] .nav-link.activ    { border-left-color: #00FFAA !important; }
+    [data-theme="cyberpunk"] .nav-link.project  { border-left-color: #FFD700 !important; }
+    [data-theme="cyberpunk"] #mobile-header {
+      background: #0D0D0D !important;
+      border-bottom: 1px solid rgba(255,0,63,0.3) !important;
+    }
+    /* Welcome */
+    [data-theme="cyberpunk"] #welcome h1 { color: #FFFFFF !important; }
+    [data-theme="cyberpunk"] #welcome p  { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] .card {
+      background: rgba(18,18,18,0.9) !important;
+      border-color: rgba(255,0,63,0.25) !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] .card:hover {
+      box-shadow: 0 8px 24px rgba(255,0,63,0.15) !important;
+    }
+    [data-theme="cyberpunk"] .card h3 { color: #E5E5E5 !important; }
+    [data-theme="cyberpunk"] .card p  { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] .card.logo-card { border-top-color: #FF003F !important; }
+    [data-theme="cyberpunk"] .card.py-card   { border-top-color: #00FFAA !important; }
+    [data-theme="cyberpunk"] .card.info-card { border-top-color: rgba(255,0,63,0.5) !important; }
+    /* Markdown */
+    [data-theme="cyberpunk"] #md-content h1 {
+      color: #FFFFFF !important;
+      border-bottom-color: rgba(255,0,63,0.4) !important;
+    }
+    [data-theme="cyberpunk"] #md-content h2 { color: #FF6688 !important; }
+    [data-theme="cyberpunk"] #md-content h3 { color: #00FFAA !important; }
+    [data-theme="cyberpunk"] #md-content p,
+    [data-theme="cyberpunk"] #md-content li { color: #D1D5DB !important; }
+    [data-theme="cyberpunk"] #md-content strong { color: #FFFFFF !important; }
+    [data-theme="cyberpunk"] #md-content em     { color: #9CA3AF !important; }
+    [data-theme="cyberpunk"] #md-content a      { color: #00FFAA !important; }
+    [data-theme="cyberpunk"] #md-content code:not(pre code) {
+      background: rgba(255,0,63,0.08) !important;
+      color: #FF6688 !important;
+      border: 1px solid rgba(255,0,63,0.25) !important;
+    }
+    [data-theme="cyberpunk"] #md-content blockquote {
+      background: rgba(255,0,63,0.04) !important;
+      border-left-color: #FF003F !important;
+      color: #FF6688 !important;
+    }
+    [data-theme="cyberpunk"] #md-content th {
+      background: #1A0000 !important;
+      color: #FF003F !important;
+    }
+    [data-theme="cyberpunk"] #md-content td {
+      border-bottom-color: rgba(255,0,63,0.15) !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] #md-content tr:nth-child(even) td { background: rgba(255,0,63,0.03) !important; }
+    [data-theme="cyberpunk"] #md-content tr:hover td           { background: rgba(255,0,63,0.07) !important; }
+    [data-theme="cyberpunk"] #md-content hr { border-top-color: rgba(255,0,63,0.25) !important; }
+    /* Breadcrumb + nav */
+    [data-theme="cyberpunk"] #breadcrumb       { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] #breadcrumb span  { color: #6B7280 !important; }
+    [data-theme="cyberpunk"] #breadcrumb a     { color: #00FFAA !important; }
+    [data-theme="cyberpunk"] #page-nav         { border-top-color: rgba(255,0,63,0.2) !important; }
+    [data-theme="cyberpunk"] .nav-btn {
+      background: rgba(15,15,15,0.95) !important;
+      border-color: rgba(255,0,63,0.3) !important;
+      color: #D1D5DB !important;
+    }
+    [data-theme="cyberpunk"] .nav-btn:hover {
+      background: rgba(255,0,63,0.05) !important;
+      border-color: #FF003F !important;
+    }
+    [data-theme="cyberpunk"] .nav-btn-label { color: #6B7280 !important; }
+
+    /* ── FUTURISTA ──────────────────────────────────────────── */
+    [data-theme="futurista"] body {
+      background: linear-gradient(135deg, #0F172A 0%, #0D1B2A 50%, #091426 100%) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] #sidebar {
+      background: rgba(8,16,32,0.97) !important;
+      border-right: 1px solid rgba(0,212,255,0.2) !important;
+    }
+    [data-theme="futurista"] .sidebar-header {
+      background: rgba(4,10,22,0.99) !important;
+      border-bottom-color: rgba(0,212,255,0.15) !important;
+    }
+    [data-theme="futurista"] .sidebar-header h1 {
+      color: #00D4FF !important;
+      text-shadow: 0 0 10px rgba(0,212,255,0.4) !important;
+    }
+    [data-theme="futurista"] .sidebar-header p { color: #64748B !important; }
+    [data-theme="futurista"] .nav-section-title { color: rgba(0,212,255,0.5) !important; }
+    [data-theme="futurista"] .nav-group-header  { color: #CBD5E1 !important; }
+    [data-theme="futurista"] .nav-group-header:hover { background: rgba(0,212,255,0.07) !important; }
+    [data-theme="futurista"] .nav-link          { color: #94A3B8 !important; }
+    [data-theme="futurista"] .nav-link:hover    { background: rgba(0,212,255,0.07) !important; color: #00D4FF !important; }
+    [data-theme="futurista"] .nav-link.active   {
+      background: rgba(0,212,255,0.18) !important;
+      color: #00D4FF !important;
+    }
+    [data-theme="futurista"] .nav-link.teoria  { border-left-color: #00D4FF !important; }
+    [data-theme="futurista"] .nav-link.activ   { border-left-color: #38BDF8 !important; }
+    [data-theme="futurista"] #mobile-header    { background: rgba(8,16,32,0.97) !important; }
+    /* Welcome */
+    [data-theme="futurista"] #welcome h1 {
+      color: #00D4FF !important;
+      text-shadow: 0 0 20px rgba(0,212,255,0.4) !important;
+    }
+    [data-theme="futurista"] #welcome p  { color: #64748B !important; }
+    [data-theme="futurista"] .card {
+      background: rgba(14,165,233,0.06) !important;
+      backdrop-filter: blur(20px) !important;
+      -webkit-backdrop-filter: blur(20px) !important;
+      border-color: rgba(0,212,255,0.2) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] .card:hover {
+      box-shadow: 0 8px 24px rgba(0,212,255,0.1) !important;
+    }
+    [data-theme="futurista"] .card h3 { color: #E2E8F0 !important; }
+    [data-theme="futurista"] .card p  { color: #64748B !important; }
+    [data-theme="futurista"] .card.logo-card { border-top-color: #0EA5E9 !important; }
+    [data-theme="futurista"] .card.py-card   { border-top-color: #06B6D4 !important; }
+    /* Markdown */
+    [data-theme="futurista"] #md-content h1 {
+      color: #00D4FF !important;
+      border-bottom-color: rgba(0,212,255,0.3) !important;
+      text-shadow: 0 0 15px rgba(0,212,255,0.25) !important;
+    }
+    [data-theme="futurista"] #md-content h2 { color: #38BDF8 !important; }
+    [data-theme="futurista"] #md-content h3 { color: #7DD3FC !important; }
+    [data-theme="futurista"] #md-content p,
+    [data-theme="futurista"] #md-content li { color: #CBD5E1 !important; }
+    [data-theme="futurista"] #md-content strong { color: #E2E8F0 !important; }
+    [data-theme="futurista"] #md-content a      { color: #38BDF8 !important; }
+    [data-theme="futurista"] #md-content code:not(pre code) {
+      background: rgba(0,212,255,0.08) !important;
+      color: #38BDF8 !important;
+      border: 1px solid rgba(0,212,255,0.2) !important;
+    }
+    [data-theme="futurista"] #md-content blockquote {
+      background: rgba(0,212,255,0.04) !important;
+      border-left-color: #00D4FF !important;
+      color: #38BDF8 !important;
+    }
+    [data-theme="futurista"] #md-content th {
+      background: rgba(0,212,255,0.15) !important;
+      color: #00D4FF !important;
+    }
+    [data-theme="futurista"] #md-content td {
+      border-bottom-color: rgba(0,212,255,0.1) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] #md-content tr:nth-child(even) td { background: rgba(0,212,255,0.03) !important; }
+    [data-theme="futurista"] #md-content tr:hover td           { background: rgba(0,212,255,0.07) !important; }
+    [data-theme="futurista"] #md-content hr { border-top-color: rgba(0,212,255,0.2) !important; }
+    /* Breadcrumb + nav */
+    [data-theme="futurista"] #breadcrumb      { color: #64748B !important; }
+    [data-theme="futurista"] #breadcrumb a    { color: #38BDF8 !important; }
+    [data-theme="futurista"] #page-nav        { border-top-color: rgba(0,212,255,0.15) !important; }
+    [data-theme="futurista"] .nav-btn {
+      background: rgba(0,212,255,0.06) !important;
+      border-color: rgba(0,212,255,0.2) !important;
+      color: #CBD5E1 !important;
+    }
+    [data-theme="futurista"] .nav-btn:hover {
+      background: rgba(0,212,255,0.1) !important;
+      border-color: #00D4FF !important;
+    }
+    [data-theme="futurista"] .nav-btn-label { color: #64748B !important; }
   </style>
 </head>
 <body>
