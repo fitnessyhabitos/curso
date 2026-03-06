@@ -186,7 +186,7 @@
 
   <script type="module">
     import { initializeApp }                      from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const app  = initializeApp({
@@ -226,7 +226,9 @@
 
     let uid, progreso = {};
 
-    onAuthStateChanged(auth, async user => {
+    // authStateReady() espera a que Firebase resuelva la sesión real (evita bucles index↔dashboard)
+    auth.authStateReady().then(async () => {
+      const user = auth.currentUser;
       if (!user) { location.href = 'index.html'; return; }
       uid = user.uid;
       const snap = await getDoc(doc(db, 'usuarios', uid));

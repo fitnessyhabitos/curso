@@ -737,7 +737,7 @@ CUADRADO 80`
   <!-- Firebase (módulo independiente para no mezclar con el intérprete) -->
   <script type="module">
     import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-    import { getAuth, onAuthStateChanged }           from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getAuth }                               from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const app  = initializeApp({
@@ -752,7 +752,9 @@ CUADRADO 80`
     const db   = getFirestore(app);
     let uid = null;
 
-    onAuthStateChanged(auth, async user => {
+    // authStateReady() espera a que Firebase resuelva la sesión real (evita bucles)
+    auth.authStateReady().then(async () => {
+      const user = auth.currentUser;
       if (!user) { location.href = 'index.html'; return; }
       uid = user.uid;
       try {

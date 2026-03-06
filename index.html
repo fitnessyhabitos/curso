@@ -123,7 +123,7 @@
   <script type="module">
     import { initializeApp }                         from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, createUserWithEmailAndPassword,
-             signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+             signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
     import { getFirestore, doc, setDoc }             from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const app  = initializeApp({
@@ -137,8 +137,10 @@
     const auth = getAuth(app);
     const db   = getFirestore(app);
 
-    // Si ya hay sesión activa, redirigir
-    onAuthStateChanged(auth, user => { if (user) location.href = 'dashboard.html'; });
+    // Esperar a que Firebase resuelva el estado real (evita bucles)
+    auth.authStateReady().then(() => {
+      if (auth.currentUser) location.href = 'dashboard.html';
+    });
 
     window.switchTab = t => {
       ['login','register'].forEach(x => {
@@ -155,6 +157,7 @@
       setLoading(true);
       try {
         await signInWithEmailAndPassword(auth, email, pass);
+        location.href = 'dashboard.html';
       } catch(e) { showErr('login-err', friendly(e.code)); setLoading(false); }
     };
 
@@ -175,6 +178,7 @@
           codigoPython: '',
           codigoLogo:   ''
         });
+        location.href = 'dashboard.html';
       } catch(e) { showErr('reg-err', friendly(e.code)); setLoading(false); }
     };
 
