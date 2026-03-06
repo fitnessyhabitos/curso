@@ -194,7 +194,7 @@
   <script type="module">
     import { initializeApp }                      from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
     import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
-    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
     const app  = initializeApp({
       apiKey:            "AIzaSyAMDcXrNNQ7wJiNZP-9Pmnxo9X2PPSs5kg",
@@ -239,23 +239,35 @@
       if (!user) { location.href = 'index.html'; return; }
       uid = user.uid;
 
-      // Cargar datos del alumno (con manejo de errores de Firestore)
+      // Cargar datos del alumno — si el documento no existe lo crea automáticamente
       try {
-        const snap = await getDoc(doc(db, 'usuarios', uid));
+        const ref  = doc(db, 'usuarios', uid);
+        const snap = await getDoc(ref);
+
+        let nombre;
         if (snap.exists()) {
           const data = snap.data();
           progreso = data.progreso || {};
-          const nombre = data.nombre || user.email.split('@')[0];
-          document.getElementById('nav-name').textContent = nombre;
-          document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+          nombre   = data.nombre   || user.email.split('@')[0];
         } else {
-          // Documento no existe aún → crearlo con valores por defecto
-          const nombre = user.email.split('@')[0];
-          document.getElementById('nav-name').textContent = nombre;
-          document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+          // Cuenta auth sin documento Firestore (registrado antes de crear la BD)
+          // → crear el documento ahora automáticamente
+          nombre = user.email.split('@')[0];
+          await setDoc(ref, {
+            nombre,
+            email:        user.email,
+            creadoEn:     new Date().toISOString(),
+            progreso:     {},
+            codigoPython: '',
+            codigoLogo:   ''
+          });
         }
+
+        document.getElementById('nav-name').textContent     = nombre;
+        document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+
       } catch(e) {
-        // Firestore no configurado o sin permisos → mostrar aviso pero continuar
+        // Firestore sin permisos → mostrar aviso pero continuar mostrando el dashboard
         console.warn('Firestore no disponible:', e.message);
         showFirestoreWarning(e.code);
       }
