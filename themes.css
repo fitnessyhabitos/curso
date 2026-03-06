@@ -249,7 +249,10 @@
 [data-theme="futurista"] .stat-card,
 [data-theme="futurista"] .profile-card,
 [data-theme="futurista"] .example-card,
-[data-theme="futurista"] .ref-panel {
+[data-theme="futurista"] .ref-panel,
+[data-theme="futurista"] .panel,
+[data-theme="futurista"] .progress-wrap,
+[data-theme="futurista"] .avatar-picker {
   background: rgba(14,165,233,0.07) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
@@ -257,11 +260,22 @@
   box-shadow: 0 8px 32px rgba(0,212,255,0.08), inset 0 1px 0 rgba(255,255,255,0.05) !important;
 }
 
+[data-theme="futurista"] nav,
 [data-theme="futurista"] .nav {
   background: rgba(0,212,255,0.06) !important;
   backdrop-filter: blur(20px) !important;
   -webkit-backdrop-filter: blur(20px) !important;
   border-bottom: 1px solid rgba(0,212,255,0.2) !important;
+}
+
+[data-theme="futurista"] .panel-header {
+  color: #00D4FF !important;
+  border-color: rgba(0,212,255,0.15) !important;
+}
+
+[data-theme="futurista"] #code {
+  background: rgba(0,212,255,0.03) !important;
+  color: #E2E8F0 !important;
 }
 
 [data-theme="futurista"] .nav-brand,
@@ -386,7 +400,10 @@
 [data-theme="cyberpunk"] .stat-card,
 [data-theme="cyberpunk"] .profile-card,
 [data-theme="cyberpunk"] .example-card,
-[data-theme="cyberpunk"] .ref-panel {
+[data-theme="cyberpunk"] .ref-panel,
+[data-theme="cyberpunk"] .panel,
+[data-theme="cyberpunk"] .progress-wrap,
+[data-theme="cyberpunk"] .avatar-picker {
   background: rgba(20,20,20,0.75) !important;
   backdrop-filter: blur(24px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
@@ -397,12 +414,38 @@
     0 0 0 0.5px rgba(255,0,63,0.1) !important;
 }
 
+[data-theme="cyberpunk"] nav,
 [data-theme="cyberpunk"] .nav {
-  background: rgba(0,0,0,0.8) !important;
+  background: rgba(0,0,0,0.85) !important;
   backdrop-filter: blur(24px) !important;
   -webkit-backdrop-filter: blur(24px) !important;
   border-bottom: 1px solid rgba(255,0,63,0.35) !important;
   box-shadow: 0 0 20px rgba(255,0,63,0.1) !important;
+}
+
+[data-theme="cyberpunk"] .panel-header {
+  color: #FF003F !important;
+  border-color: rgba(255,0,63,0.2) !important;
+}
+
+[data-theme="cyberpunk"] #code {
+  background: #080808 !important;
+  color: #FF6688 !important;
+}
+
+[data-theme="cyberpunk"] .btn-back,
+[data-theme="cyberpunk"] .btn-logout,
+[data-theme="cyberpunk"] .btn-clear,
+[data-theme="cyberpunk"] .btn-ex {
+  background: rgba(255,0,63,0.08) !important;
+  border-color: rgba(255,0,63,0.25) !important;
+  color: #D1D5DB !important;
+}
+
+[data-theme="cyberpunk"] .nav-brand,
+[data-theme="cyberpunk"] .nav-title {
+  color: #FF003F !important;
+  text-shadow: 0 0 20px rgba(255,0,63,0.8), 0 0 40px rgba(255,0,63,0.4) !important;
 }
 
 [data-theme="cyberpunk"] .nav-brand,

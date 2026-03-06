@@ -380,9 +380,9 @@
       '#10B981','#06B6D4','#3B82F6','#1F2937','#6B7280',
     ];
 
-    let selectedAvatar = '🦁';
-    let selectedColor  = '#6366F1';
-    let selectedTheme  = localStorage.getItem('tema') || 'clasico';
+    window.selectedAvatar = '🦁';
+    window.selectedColor  = '#6366F1';
+    window.selectedTheme  = localStorage.getItem('tema') || 'clasico';
 
     // Renderizar grids de emojis
     Object.entries(EMOJIS).forEach(([cat, emojis]) => {
@@ -407,7 +407,7 @@
     });
 
     function selectAvatar(emoji) {
-      selectedAvatar = emoji;
+      window.selectedAvatar = emoji;
       document.getElementById('avatar-big').textContent = emoji;
       document.querySelectorAll('.emoji-opt').forEach(b => {
         b.classList.toggle('active', b.textContent === emoji);
@@ -415,7 +415,7 @@
     }
 
     function selectColor(color) {
-      selectedColor = color;
+      window.selectedColor = color;
       document.querySelectorAll('.color-opt').forEach(d => {
         d.classList.toggle('active', d.dataset.color === color);
       });
@@ -428,14 +428,14 @@
     // ── Selector de tema ──
     // Marca la tarjeta activa al cargar
     (function initThemeCards() {
-      const t = selectedTheme;
+      const t = window.selectedTheme;
       document.querySelectorAll('.theme-card').forEach(c => {
         c.classList.toggle('active', c.id === 'tc-' + t);
       });
     })();
 
     window.selectTheme = function(name) {
-      selectedTheme = name;
+      window.selectedTheme = name;
 
       // Aplicar inmediatamente
       if (name === 'clasico') {
