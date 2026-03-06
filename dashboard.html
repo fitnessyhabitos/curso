@@ -142,6 +142,13 @@
       <div class="welcome-emoji">🚀</div>
     </div>
 
+    <!-- Aviso Firestore -->
+    <div id="firestore-warn" style="display:none; background:#FEF3C7; border:2px solid #FCD34D; border-radius:14px; padding:16px 20px; margin-bottom:20px; font-weight:700; font-size:14px; color:#92400E;">
+      ⚠️ <strong>Firestore no está configurado.</strong>
+      El progreso no se guardará hasta que actives Firestore en la consola de Firebase.
+      <a href="https://console.firebase.google.com" target="_blank" style="color:#D97706; text-decoration:underline;">Ir a Firebase Console →</a>
+    </div>
+
     <!-- Stats -->
     <div class="stats">
       <div class="stat-card purple">
@@ -231,17 +238,35 @@
       const user = auth.currentUser;
       if (!user) { location.href = 'index.html'; return; }
       uid = user.uid;
-      const snap = await getDoc(doc(db, 'usuarios', uid));
-      if (!snap.exists()) { location.href = 'index.html'; return; }
-      const data = snap.data();
-      progreso = data.progreso || {};
-      const nombre = data.nombre || 'Programador';
 
-      document.getElementById('nav-name').textContent = nombre;
-      document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+      // Cargar datos del alumno (con manejo de errores de Firestore)
+      try {
+        const snap = await getDoc(doc(db, 'usuarios', uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          progreso = data.progreso || {};
+          const nombre = data.nombre || user.email.split('@')[0];
+          document.getElementById('nav-name').textContent = nombre;
+          document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+        } else {
+          // Documento no existe aún → crearlo con valores por defecto
+          const nombre = user.email.split('@')[0];
+          document.getElementById('nav-name').textContent = nombre;
+          document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+        }
+      } catch(e) {
+        // Firestore no configurado o sin permisos → mostrar aviso pero continuar
+        console.warn('Firestore no disponible:', e.message);
+        showFirestoreWarning(e.code);
+      }
 
       renderModules();
       updateStats();
+      hideLoader();
+
+    }).catch(e => {
+      // Error grave de Auth → mostrar mensaje y ocultar loader
+      console.error('Error de autenticación:', e);
       hideLoader();
     });
 
@@ -294,6 +319,13 @@
       await signOut(auth);
       location.href = 'index.html';
     };
+
+    function showFirestoreWarning(code) {
+      // Solo mostrar si es un error de permisos o de base de datos no creada
+      if (code === 'permission-denied' || code === 'unavailable' || !code) {
+        document.getElementById('firestore-warn').style.display = 'block';
+      }
+    }
 
     function hideLoader() {
       const l = document.getElementById('loader');
