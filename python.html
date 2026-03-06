@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐍 Terminal Python</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Skulpt (Python en el navegador con soporte turtle) -->
+  <script src="https://skulpt.org/js/skulpt.min.js"></script>
+  <script src="https://skulpt.org/js/skulpt-stdlib.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #F0F4FF; color: #1F2937; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: white; padding: 0 20px; height: 58px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); gap: 12px;
+    }
+    .nav-left  { display: flex; align-items: center; gap: 10px; }
+    .nav-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn-back {
+      padding: 8px 14px; border-radius: 10px; border: 2px solid #E5E7EB;
+      background: white; color: #6B7280; font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-back:hover { border-color: #6366F1; color: #6366F1; }
+    .nav-title { font-size: 17px; font-weight: 900; color: #1F2937; }
+
+    .btn {
+      padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; transition: all 0.2s;
+    }
+    .btn-run  { background: #10B981; color: white; }
+    .btn-run:hover { background: #059669; }
+    .btn-run:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-clear { background: #F3F4F6; color: #6B7280; }
+    .btn-clear:hover { background: #E5E7EB; }
+    .btn-save  { background: #6366F1; color: white; }
+    .btn-save:hover { background: #4F46E5; }
+
+    /* ── EXAMPLES DROPDOWN ── */
+    .dropdown { position: relative; }
+    .btn-ex { background: #F3F4F6; color: #374151; }
+    .btn-ex:hover { background: #E5E7EB; }
+    .dropdown-menu {
+      display: none; position: absolute; top: 110%; right: 0; background: white;
+      border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); min-width: 200px;
+      z-index: 200; overflow: hidden;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-item {
+      padding: 11px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+      color: #374151; transition: background 0.15s; display: flex; align-items: center; gap: 8px;
+    }
+    .dropdown-item:hover { background: #F3F4F6; }
+
+    /* ── WORKSPACE ── */
+    .workspace {
+      flex: 1; display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; padding: 12px; overflow: hidden;
+    }
+    .panel {
+      background: white; border-radius: 16px; display: flex; flex-direction: column;
+      overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .panel-header {
+      padding: 10px 16px; font-size: 12px; font-weight: 800; color: #6B7280;
+      border-bottom: 1px solid #F3F4F6; letter-spacing: 0.05em; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .panel-header span { display: flex; align-items: center; gap: 6px; }
+
+    /* ── CODE EDITOR ── */
+    #code {
+      flex: 1; width: 100%; resize: none; border: none; outline: none;
+      font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.6;
+      padding: 16px; color: #1F2937; background: #FAFAFE;
+      tab-size: 4;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right-panel { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+    .turtle-wrap {
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); flex: 1; display: flex; flex-direction: column;
+    }
+    .turtle-body { flex: 1; display: flex; align-items: center; justify-content: center; background: #FAFAFE; overflow: hidden; }
+    #turtle-output { display: flex; align-items: center; justify-content: center; }
+    #turtle-output canvas { border-radius: 8px; }
+
+    .output-wrap {
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); min-height: 120px; max-height: 180px;
+      display: flex; flex-direction: column;
+    }
+    #output {
+      flex: 1; padding: 12px 16px; font-family: 'Courier New', monospace;
+      font-size: 13px; line-height: 1.6; overflow-y: auto; white-space: pre-wrap;
+      color: #1F2937; background: #FAFAFE;
+    }
+    #output .err { color: #EF4444; }
+    #output .ok  { color: #10B981; }
+
+    /* ── INPUT MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+      z-index: 500; align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white; border-radius: 20px; padding: 28px; width: 90%; max-width: 380px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: popIn 0.2s ease;
+    }
+    @keyframes popIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-prompt { font-size: 16px; font-weight: 700; color: #1F2937; margin-bottom: 14px; }
+    .modal-input {
+      width: 100%; padding: 12px 16px; border: 2px solid #E5E7EB; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s;
+    }
+    .modal-input:focus { border-color: #10B981; }
+    .modal-btn {
+      margin-top: 12px; width: 100%; padding: 12px; border: none; border-radius: 12px;
+      background: #10B981; color: white; font-family: 'Nunito', sans-serif;
+      font-weight: 800; font-size: 15px; cursor: pointer;
+    }
+    .modal-btn:hover { background: #059669; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #1F2937; color: white;
+      padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 14px;
+      z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── STATUS ── */
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; background: #D1D5DB; flex-shrink: 0; }
+    .status-dot.running { background: #F59E0B; animation: pulse 1s infinite; }
+    .status-dot.done    { background: #10B981; }
+    .status-dot.error   { background: #EF4444; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    /* ── SAVE STATUS ── */
+    #save-status { font-size: 12px; color: #9CA3AF; font-weight: 600; }
+
+    @media (max-width: 700px) {
+      .workspace { grid-template-columns: 1fr; }
+      .right-panel { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="nav-left">
+      <a href="dashboard.html" class="btn-back">← Dashboard</a>
+      <span class="nav-title">🐍 Terminal Python</span>
+    </div>
+    <div class="nav-right">
+      <div class="dropdown">
+        <button class="btn btn-ex" onclick="toggleExamples()">📂 Ejemplos ▾</button>
+        <div class="dropdown-menu" id="examples-menu">
+          <div class="dropdown-item" onclick="loadExample('hola')">👋 Hola Mundo</div>
+          <div class="dropdown-item" onclick="loadExample('nombre')">🧑 Mi nombre</div>
+          <div class="dropdown-item" onclick="loadExample('cuadrado')">⬜ Cuadrado Turtle</div>
+          <div class="dropdown-item" onclick="loadExample('espiral')">🌀 Espiral de colores</div>
+          <div class="dropdown-item" onclick="loadExample('calculadora')">🔢 Calculadora</div>
+          <div class="dropdown-item" onclick="loadExample('adivina')">🎲 Adivina el número</div>
+        </div>
+      </div>
+      <button class="btn btn-clear" onclick="clearAll()">🗑️ Limpiar</button>
+      <button class="btn btn-save"  onclick="saveCode()" id="btn-save">💾 Guardar</button>
+      <button class="btn btn-run"   onclick="runCode()"  id="btn-run">▶ Ejecutar</button>
+    </div>
+  </nav>
+
+  <!-- Main workspace -->
+  <div class="workspace">
+
+    <!-- Editor -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>✏️ EDITOR DE CÓDIGO</span>
+        <span id="save-status"></span>
+      </div>
+      <textarea id="code" spellcheck="false" placeholder="# Escribe tu código Python aquí...
+# Ejemplo:
+nombre = input('¿Cómo te llamas? ')
+print(f'¡Hola, {nombre}! 🎉')"></textarea>
+    </div>
+
+    <!-- Right: turtle + output -->
+    <div class="right-panel">
+      <!-- Turtle canvas -->
+      <div class="turtle-wrap">
+        <div class="panel-header">
+          <span>🐢 GRÁFICOS TURTLE</span>
+          <span style="display:flex;align-items:center;gap:6px;">
+            <div class="status-dot" id="status-dot"></div>
+            <span id="status-txt" style="font-size:11px;color:#9CA3AF;">Listo</span>
+          </span>
+        </div>
+        <div class="turtle-body">
+          <div id="turtle-output"></div>
+        </div>
+      </div>
+
+      <!-- Text output -->
+      <div class="output-wrap">
+        <div class="panel-header"><span>📟 SALIDA DEL PROGRAMA</span></div>
+        <pre id="output"><span style="color:#9CA3AF">Aquí aparecerá lo que imprima tu programa...</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input modal -->
+  <div class="modal-overlay" id="input-modal">
+    <div class="modal-box">
+      <div class="modal-prompt" id="modal-prompt">Introduce un valor:</div>
+      <input type="text" class="modal-input" id="modal-input" autocomplete="off">
+      <button class="modal-btn" onclick="submitInput()">✅ Aceptar</button>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged }           from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const app  = initializeApp({
+      apiKey:            "AIzaSyAMDcXrNNQ7wJiNZP-9Pmnxo9X2PPSs5kg",
+      authDomain:        "cursologopython.firebaseapp.com",
+      projectId:         "cursologopython",
+      storageBucket:     "cursologopython.firebasestorage.app",
+      messagingSenderId: "268418668428",
+      appId:             "1:268418668428:web:2a45ced6d2f4ad560b68a9"
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    let uid = null;
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) { location.href = 'index.html'; return; }
+      uid = user.uid;
+      // Cargar código guardado
+      try {
+        const snap = await getDoc(doc(db, 'usuarios', uid));
+        if (snap.exists() && snap.data().codigoPython) {
+          document.getElementById('code').value = snap.data().codigoPython;
+          setSaveStatus('💾 Código cargado');
+        }
+      } catch(e) {}
+    });
+
+    // ── Ejemplos de código ──
+    const EXAMPLES = {
+      hola: `# 👋 El clásico Hola Mundo
+print("¡Hola, mundo! 🌍")
+print("Soy un programador Python 🐍")`,
+
+      nombre: `# 🧑 Preguntando el nombre
+nombre = input("¿Cómo te llamas? ")
+edad   = input("¿Cuántos años tienes? ")
+print(f"¡Hola, {nombre}!")
+print(f"Tienes {edad} años. ¡Genial!")`,
+
+      cuadrado: `# ⬜ Dibujando un cuadrado con Turtle
+import turtle
+
+t = turtle.Turtle()
+t.speed(5)
+t.pensize(3)
+t.color("blue")
+
+for i in range(4):
+    t.forward(100)
+    t.right(90)
+
+print("¡Cuadrado dibujado! 🎉")`,
+
+      espiral: `# 🌀 Espiral de colores con Turtle
+import turtle
+
+t = turtle.Turtle()
+t.speed(10)
+t.pensize(2)
+colores = ["red", "orange", "green", "blue", "purple"]
+
+for i in range(80):
+    t.color(colores[i % len(colores)])
+    t.forward(i * 2)
+    t.right(91)
+
+print("¡Espiral dibujada! 🌈")`,
+
+      calculadora: `# 🔢 Calculadora sencilla
+print("🔢 CALCULADORA")
+print("=" * 20)
+
+a = float(input("Primer número: "))
+b = float(input("Segundo número: "))
+
+print(f"\\nResultados:")
+print(f"  {a} + {b} = {a + b}")
+print(f"  {a} - {b} = {a - b}")
+print(f"  {a} × {b} = {a * b}")
+if b != 0:
+    print(f"  {a} ÷ {b} = {a / b:.2f}")`,
+
+      adivina: `# 🎲 Adivina el número secreto
+import random
+
+secreto = random.randint(1, 10)
+intentos = 0
+print("🎲 ¡Adivina el número del 1 al 10!")
+
+while True:
+    numero = int(input("Tu intento: "))
+    intentos += 1
+    if numero < secreto:
+        print("📈 ¡Más grande!")
+    elif numero > secreto:
+        print("📉 ¡Más pequeño!")
+    else:
+        print(f"🎉 ¡CORRECTO! Era el {secreto}")
+        print(f"Lo conseguiste en {intentos} intentos")
+        break`
+    };
+
+    window.loadExample = code => {
+      document.getElementById('code').value = EXAMPLES[code] || '';
+      closeExamples();
+    };
+
+    // ── Ejecución con Skulpt ──
+    let inputResolve = null;
+
+    window.runCode = function() {
+      const code = document.getElementById('code').value;
+      if (!code.trim()) return;
+
+      setStatus('running', 'Ejecutando...');
+      document.getElementById('btn-run').disabled = true;
+
+      // Limpiar salida
+      document.getElementById('output').innerHTML = '';
+      // Limpiar canvas turtle
+      document.getElementById('turtle-output').innerHTML = '';
+
+      Sk.configure({
+        output: txt => {
+          const out = document.getElementById('output');
+          out.innerHTML += escapeHtml(txt);
+          out.scrollTop = out.scrollHeight;
+        },
+        read: x => {
+          if (Sk.builtinFiles?.files?.[x]) return Sk.builtinFiles.files[x];
+          throw new Error("No se puede leer: " + x);
+        },
+        __future__: Sk.python3,
+        inputfun: prompt => new Promise(resolve => {
+          inputResolve = resolve;
+          document.getElementById('modal-prompt').textContent = prompt || 'Introduce un valor:';
+          document.getElementById('modal-input').value = '';
+          document.getElementById('input-modal').classList.add('open');
+          setTimeout(() => document.getElementById('modal-input').focus(), 100);
+        }),
+        inputfunTakesPrompt: true
+      });
+
+      Sk.TurtleGraphics = {
+        target:    'turtle-output',
+        width:     420,
+        height:    360,
+        worldcoords: false,
+      };
+
+      Sk.misceval.asyncToPromise(() =>
+        Sk.importMainWithBody("<stdin>", false, code, true)
+      ).then(() => {
+        setStatus('done', 'Completado ✅');
+        document.getElementById('btn-run').disabled = false;
+      }).catch(err => {
+        const msg = err.toString().replace(/^.*Error:/,'Error:');
+        const out = document.getElementById('output');
+        out.innerHTML += `<span class="err">❌ ${escapeHtml(msg)}</span>`;
+        out.scrollTop = out.scrollHeight;
+        setStatus('error', 'Error ❌');
+        document.getElementById('btn-run').disabled = false;
+      });
+    };
+
+    window.submitInput = () => {
+      const val = document.getElementById('modal-input').value;
+      document.getElementById('input-modal').classList.remove('open');
+      if (inputResolve) { inputResolve(val); inputResolve = null; }
+    };
+
+    document.getElementById('modal-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') window.submitInput();
+    });
+
+    // ── Guardar / Cargar ──
+    window.saveCode = async () => {
+      if (!uid) return;
+      const code = document.getElementById('code').value;
+      setSaveStatus('⏳ Guardando...');
+      try {
+        await updateDoc(doc(db, 'usuarios', uid), { codigoPython: code });
+        setSaveStatus('✅ Guardado');
+        showToast('💾 ¡Código guardado!');
+        setTimeout(() => setSaveStatus(''), 3000);
+      } catch(e) {
+        setSaveStatus('❌ Error al guardar');
+      }
+    };
+
+    // ── Limpiar ──
+    window.clearAll = () => {
+      document.getElementById('code').value = '';
+      document.getElementById('output').innerHTML = '<span style="color:#9CA3AF">Aquí aparecerá lo que imprima tu programa...</span>';
+      document.getElementById('turtle-output').innerHTML = '';
+      setStatus('', 'Listo');
+    };
+
+    // ── Ejemplos dropdown ──
+    window.toggleExamples = () => {
+      document.getElementById('examples-menu').classList.toggle('open');
+    };
+    function closeExamples() {
+      document.getElementById('examples-menu').classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.dropdown')) closeExamples();
+    });
+
+    // ── Atajo de teclado: Ctrl+Enter para ejecutar ──
+    document.getElementById('code').addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+        e.preventDefault();
+        window.runCode();
+      }
+      // Tab = 4 espacios
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const ta = e.target;
+        const s = ta.selectionStart;
+        ta.value = ta.value.substring(0, s) + '    ' + ta.value.substring(ta.selectionEnd);
+        ta.selectionStart = ta.selectionEnd = s + 4;
+      }
+    });
+
+    // ── Helpers ──
+    function setStatus(state, txt) {
+      const dot = document.getElementById('status-dot');
+      dot.className = 'status-dot' + (state ? ' ' + state : '');
+      document.getElementById('status-txt').textContent = txt;
+    }
+    function setSaveStatus(t) { document.getElementById('save-status').textContent = t; }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    // Guardar automáticamente cada 60 segundos
+    setInterval(() => { if (uid) window.saveCode(); }, 60000);
+  </script>
+</body>
+</html>

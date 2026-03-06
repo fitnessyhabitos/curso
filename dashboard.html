@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐢 Mi Curso - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #F0F4FF; color: #1F2937; min-height: 100vh; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: white; padding: 0 24px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 100;
+    }
+    .nav-brand { font-size: 20px; font-weight: 900; color: #6366F1; display: flex; align-items: center; gap: 8px; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-user { font-size: 14px; font-weight: 700; color: #6B7280; }
+    .btn-logout {
+      padding: 8px 16px; border-radius: 10px; border: 2px solid #E5E7EB;
+      background: white; color: #6B7280; font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s;
+    }
+    .btn-logout:hover { border-color: #EF4444; color: #EF4444; }
+
+    /* ── MAIN ── */
+    main { max-width: 1100px; margin: 0 auto; padding: 30px 20px 60px; }
+
+    /* ── WELCOME BANNER ── */
+    .welcome {
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+      border-radius: 20px; padding: 28px 32px; color: white; margin-bottom: 28px;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+    }
+    .welcome h2 { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+    .welcome p  { font-size: 14px; opacity: 0.85; font-weight: 600; }
+    .welcome-emoji { font-size: 64px; line-height: 1; }
+
+    /* ── STATS ── */
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; margin-bottom: 28px; }
+    .stat-card {
+      background: white; border-radius: 16px; padding: 20px; text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .stat-card .num { font-size: 36px; font-weight: 900; }
+    .stat-card .lbl { font-size: 13px; color: #6B7280; font-weight: 700; margin-top: 4px; }
+    .stat-card.purple .num { color: #6366F1; }
+    .stat-card.green  .num { color: #10B981; }
+    .stat-card.yellow .num { color: #F59E0B; }
+
+    /* ── PROGRESS BAR ── */
+    .progress-wrap { background: white; border-radius: 16px; padding: 20px 24px; margin-bottom: 28px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .progress-wrap h3 { font-size: 14px; font-weight: 700; color: #6B7280; margin-bottom: 10px; }
+    .progress-bar-bg { background: #F3F4F6; border-radius: 99px; height: 14px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#6366F1,#8B5CF6); transition: width 0.6s ease; }
+    .progress-pct { font-size: 13px; color: #6B7280; font-weight: 700; margin-top: 6px; text-align: right; }
+
+    /* ── QUICK ACCESS ── */
+    .quick { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 32px; }
+    .quick-btn {
+      display: flex; align-items: center; gap: 14px;
+      padding: 18px 22px; border-radius: 16px; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 16px;
+      text-align: left; transition: all 0.2s; color: white;
+    }
+    .quick-btn.python { background: linear-gradient(135deg,#10B981,#059669); box-shadow: 0 4px 16px rgba(16,185,129,0.35); }
+    .quick-btn.logo   { background: linear-gradient(135deg,#3B82F6,#1D4ED8); box-shadow: 0 4px 16px rgba(59,130,246,0.35); }
+    .quick-btn:hover  { transform: translateY(-3px); }
+    .quick-btn .ico   { font-size: 32px; flex-shrink: 0; }
+    .quick-btn .txt small { display: block; font-size: 12px; opacity: 0.85; font-weight: 600; margin-top: 2px; }
+
+    /* ── SECTION TITLE ── */
+    .section-title { font-size: 20px; font-weight: 900; color: #1F2937; margin-bottom: 18px; }
+
+    /* ── MODULE GRID ── */
+    .modules { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+
+    .module-card {
+      background: white; border-radius: 18px; padding: 20px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 2px solid transparent;
+      transition: all 0.2s; display: flex; flex-direction: column; gap: 12px;
+    }
+    .module-card:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(0,0,0,0.12); }
+    .module-card.done  { border-color: #10B981; }
+
+    .card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+    .card-emoji { font-size: 32px; flex-shrink: 0; }
+    .badge {
+      padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 800;
+      white-space: nowrap; flex-shrink: 0;
+    }
+
+    .card-num   { font-size: 11px; font-weight: 700; color: #9CA3AF; margin-bottom: 2px; }
+    .card-title { font-size: 15px; font-weight: 800; color: #1F2937; line-height: 1.3; }
+
+    .card-check {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      color: #6B7280; padding: 8px 12px; border-radius: 10px;
+      border: 2px solid #E5E7EB; background: white;
+      font-family: 'Nunito', sans-serif; transition: all 0.2s; width: 100%;
+      justify-content: center;
+    }
+    .card-check:hover  { border-color: #10B981; color: #10B981; }
+    .card-check.done   { background: #ECFDF5; border-color: #10B981; color: #059669; }
+
+    /* ── LOADING OVERLAY ── */
+    #loader {
+      position: fixed; inset: 0; background: white; display: flex;
+      align-items: center; justify-content: center; font-size: 48px;
+      z-index: 999; transition: opacity 0.3s;
+    }
+
+    @media (max-width: 600px) {
+      .quick { grid-template-columns: 1fr; }
+      .welcome { padding: 20px; }
+      .welcome-emoji { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader">🐢</div>
+
+  <nav>
+    <div class="nav-brand">🐢 Curso Logo &amp; Python</div>
+    <div class="nav-right">
+      <span class="nav-user" id="nav-name">…</span>
+      <button class="btn-logout" onclick="doLogout()">Salir 👋</button>
+    </div>
+  </nav>
+
+  <main>
+    <!-- Welcome -->
+    <div class="welcome">
+      <div>
+        <h2 id="welcome-name">¡Hola, programador! 👋</h2>
+        <p>Haz clic en un módulo para marcarlo como completado cuando lo termines.</p>
+      </div>
+      <div class="welcome-emoji">🚀</div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card purple">
+        <div class="num" id="stat-done">0</div>
+        <div class="lbl">Módulos completados</div>
+      </div>
+      <div class="stat-card green">
+        <div class="num" id="stat-total">13</div>
+        <div class="lbl">Módulos totales</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="num" id="stat-pct">0%</div>
+        <div class="lbl">Progreso del curso</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-wrap">
+      <h3>📊 TU PROGRESO GENERAL</h3>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="pbar" style="width:0%"></div>
+      </div>
+      <div class="progress-pct" id="pbar-lbl">0 de 13 módulos</div>
+    </div>
+
+    <!-- Quick access -->
+    <div class="quick">
+      <button class="quick-btn python" onclick="location.href='python.html'">
+        <div class="ico">🐍</div>
+        <div class="txt">Terminal Python<small>Escribe y ejecuta código Python</small></div>
+      </button>
+      <button class="quick-btn logo" onclick="location.href='logo.html'">
+        <div class="ico">🐢</div>
+        <div class="txt">Terminal Logo<small>Dibuja con comandos Logo</small></div>
+      </button>
+    </div>
+
+    <!-- Modules -->
+    <div class="section-title">📚 Todos los módulos</div>
+    <div class="modules" id="modules-grid"></div>
+  </main>
+
+  <script type="module">
+    import { initializeApp }                      from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const app  = initializeApp({
+      apiKey:            "AIzaSyAMDcXrNNQ7wJiNZP-9Pmnxo9X2PPSs5kg",
+      authDomain:        "cursologopython.firebaseapp.com",
+      projectId:         "cursologopython",
+      storageBucket:     "cursologopython.firebasestorage.app",
+      messagingSenderId: "268418668428",
+      appId:             "1:268418668428:web:2a45ced6d2f4ad560b68a9"
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    // ── Definición de módulos ──
+    const MODULES = [
+      { id:'mod_00', n:'00', emoji:'👋', name:'Bienvenida e Instalación',          type:'intro'   },
+      { id:'mod_01', n:'01', emoji:'🐢', name:'Logo: Comandos Básicos',            type:'logo'    },
+      { id:'mod_02', n:'02', emoji:'🎨', name:'Logo: Figuras y Colores',           type:'logo'    },
+      { id:'mod_03', n:'03', emoji:'🔄', name:'Logo: Repetición y Procedimientos', type:'logo'    },
+      { id:'mod_04', n:'04', emoji:'🖼️', name:'Proyecto Logo Artístico',           type:'project' },
+      { id:'mod_05', n:'05', emoji:'🐍', name:'Python: Hola Mundo y Variables',    type:'python'  },
+      { id:'mod_06', n:'06', emoji:'🔢', name:'Python: Números y Operaciones',     type:'python'  },
+      { id:'mod_07', n:'07', emoji:'📝', name:'Python: Texto y Strings',           type:'python'  },
+      { id:'mod_08', n:'08', emoji:'🤔', name:'Python: Decisiones (if/else)',      type:'python'  },
+      { id:'mod_09', n:'09', emoji:'♾️', name:'Python: Bucles (for/while)',        type:'python'  },
+      { id:'mod_10', n:'10', emoji:'⚙️', name:'Python: Funciones',                type:'python'  },
+      { id:'mod_11', n:'11', emoji:'📋', name:'Python: Listas',                   type:'python'  },
+      { id:'mod_12', n:'12', emoji:'🎮', name:'Proyecto Final: Videojuego',        type:'project' },
+    ];
+
+    const TYPE = {
+      intro:   { bg:'#F5F3FF', badge:'#7C3AED', label:'Intro',        txt:'#5B21B6' },
+      logo:    { bg:'#EFF6FF', badge:'#2563EB', label:'Logo 🐢',      txt:'#1D4ED8' },
+      python:  { bg:'#ECFDF5', badge:'#059669', label:'Python 🐍',    txt:'#065F46' },
+      project: { bg:'#FFFBEB', badge:'#D97706', label:'Proyecto ⭐',  txt:'#92400E' },
+    };
+
+    let uid, progreso = {};
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) { location.href = 'index.html'; return; }
+      uid = user.uid;
+      const snap = await getDoc(doc(db, 'usuarios', uid));
+      if (!snap.exists()) { location.href = 'index.html'; return; }
+      const data = snap.data();
+      progreso = data.progreso || {};
+      const nombre = data.nombre || 'Programador';
+
+      document.getElementById('nav-name').textContent = nombre;
+      document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
+
+      renderModules();
+      updateStats();
+      hideLoader();
+    });
+
+    function renderModules() {
+      const grid = document.getElementById('modules-grid');
+      grid.innerHTML = MODULES.map(m => {
+        const done = !!progreso[m.id];
+        const tc   = TYPE[m.type];
+        return `
+        <div class="module-card ${done ? 'done' : ''}" id="card-${m.id}">
+          <div class="card-top">
+            <div class="card-emoji">${m.emoji}</div>
+            <span class="badge" style="background:${tc.badge}1A;color:${tc.badge}">${tc.label}</span>
+          </div>
+          <div>
+            <div class="card-num">MÓDULO ${m.n}</div>
+            <div class="card-title">${m.name}</div>
+          </div>
+          <button class="card-check ${done ? 'done' : ''}" onclick="toggleDone('${m.id}', this)">
+            ${done ? '✅ ¡Completado!' : '⬜ Marcar como completado'}
+          </button>
+        </div>`;
+      }).join('');
+    }
+
+    window.toggleDone = async (modId, btn) => {
+      const done = !progreso[modId];
+      progreso[modId] = done;
+      const card = document.getElementById('card-' + modId);
+      card.classList.toggle('done', done);
+      btn.textContent = done ? '✅ ¡Completado!' : '⬜ Marcar como completado';
+      btn.classList.toggle('done', done);
+      updateStats();
+      try {
+        await updateDoc(doc(db, 'usuarios', uid), { [`progreso.${modId}`]: done });
+      } catch(e) { console.warn('Error guardando progreso', e); }
+    };
+
+    function updateStats() {
+      const done  = Object.values(progreso).filter(Boolean).length;
+      const total = MODULES.length;
+      const pct   = Math.round(done / total * 100);
+      document.getElementById('stat-done').textContent = done;
+      document.getElementById('stat-pct').textContent  = pct + '%';
+      document.getElementById('pbar').style.width      = pct + '%';
+      document.getElementById('pbar-lbl').textContent  = `${done} de ${total} módulos`;
+    }
+
+    window.doLogout = async () => {
+      await signOut(auth);
+      location.href = 'index.html';
+    };
+
+    function hideLoader() {
+      const l = document.getElementById('loader');
+      l.style.opacity = '0';
+      setTimeout(() => l.style.display = 'none', 300);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐢 Curso Logo & Python</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 430px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.25);
+    }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header .emoji { font-size: 60px; display: block; margin-bottom: 10px; }
+    .header h1 { font-size: 22px; font-weight: 900; color: #1F2937; }
+    .header p { color: #9CA3AF; font-size: 14px; margin-top: 5px; font-weight: 600; }
+
+    .tabs { display: flex; background: #F3F4F6; border-radius: 14px; padding: 5px; margin-bottom: 26px; gap: 4px; }
+    .tab {
+      flex: 1; padding: 10px 8px; border: none; background: transparent;
+      border-radius: 10px; font-family: 'Nunito', sans-serif; font-weight: 700;
+      font-size: 14px; color: #9CA3AF; cursor: pointer; transition: all 0.2s;
+    }
+    .tab.active { background: white; color: #6366F1; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+    .form { display: none; }
+    .form.active { display: block; }
+
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; }
+    .field input {
+      width: 100%; padding: 13px 16px; border: 2px solid #E5E7EB; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 15px; color: #1F2937;
+      outline: none; transition: border-color 0.2s; background: #FAFAFA;
+    }
+    .field input:focus { border-color: #6366F1; background: white; }
+    .field input::placeholder { color: #D1D5DB; }
+
+    .btn {
+      width: 100%; padding: 14px; border: none; border-radius: 14px;
+      font-family: 'Nunito', sans-serif; font-size: 16px; font-weight: 800;
+      cursor: pointer; transition: all 0.2s; margin-top: 4px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+      color: white; box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
+    .btn-primary:active { transform: none; }
+    .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .alert {
+      display: none; padding: 11px 14px; border-radius: 10px;
+      font-size: 14px; font-weight: 600; margin-bottom: 16px;
+    }
+    .alert-error { background: #FEF2F2; color: #DC2626; border: 1.5px solid #FECACA; }
+
+    .spinner { display: none; text-align: center; padding: 8px; color: #6B7280; font-size: 14px; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="header">
+      <span class="emoji">🐢</span>
+      <h1>Curso Logo &amp; Python</h1>
+      <p>¡Aprende a programar de forma divertida! 🚀</p>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" id="tab-login" onclick="switchTab('login')">Entrar</button>
+      <button class="tab" id="tab-register" onclick="switchTab('register')">Registrarse</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="form active" id="form-login">
+      <div class="alert alert-error" id="login-err"></div>
+      <div class="field">
+        <label>📧 Tu email</label>
+        <input type="email" id="l-email" placeholder="alumno@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>🔑 Contraseña</label>
+        <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" id="btn-login" onclick="doLogin()">¡Entrar a aprender! 🎉</button>
+    </div>
+
+    <!-- REGISTER -->
+    <div class="form" id="form-register">
+      <div class="alert alert-error" id="reg-err"></div>
+      <div class="field">
+        <label>👤 Tu nombre</label>
+        <input type="text" id="r-name" placeholder="¿Cómo te llamas?" autocomplete="given-name">
+      </div>
+      <div class="field">
+        <label>📧 Email</label>
+        <input type="email" id="r-email" placeholder="alumno@email.com" autocomplete="email">
+      </div>
+      <div class="field">
+        <label>🔑 Contraseña <span style="color:#9CA3AF;font-weight:500">(mínimo 6 caracteres)</span></label>
+        <input type="password" id="r-pass" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <button class="btn btn-primary" id="btn-register" onclick="doRegister()">¡Crear mi cuenta! ✨</button>
+    </div>
+
+    <div class="spinner" id="spinner">⏳ Un momento...</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp }                         from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword,
+             signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, setDoc }             from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const app  = initializeApp({
+      apiKey:            "AIzaSyAMDcXrNNQ7wJiNZP-9Pmnxo9X2PPSs5kg",
+      authDomain:        "cursologopython.firebaseapp.com",
+      projectId:         "cursologopython",
+      storageBucket:     "cursologopython.firebasestorage.app",
+      messagingSenderId: "268418668428",
+      appId:             "1:268418668428:web:2a45ced6d2f4ad560b68a9"
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    // Si ya hay sesión activa, redirigir
+    onAuthStateChanged(auth, user => { if (user) location.href = 'dashboard.html'; });
+
+    window.switchTab = t => {
+      ['login','register'].forEach(x => {
+        document.getElementById('tab-' + x).classList.toggle('active', x === t);
+        document.getElementById('form-' + x).classList.toggle('active', x === t);
+      });
+      clearErrors();
+    };
+
+    window.doLogin = async () => {
+      clearErrors();
+      const email = val('l-email'), pass = val('l-pass');
+      if (!email || !pass) return showErr('login-err', 'Rellena todos los campos 😊');
+      setLoading(true);
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+      } catch(e) { showErr('login-err', friendly(e.code)); setLoading(false); }
+    };
+
+    window.doRegister = async () => {
+      clearErrors();
+      const name = val('r-name'), email = val('r-email'), pass = val('r-pass');
+      if (!name)          return showErr('reg-err', 'Escribe tu nombre 😊');
+      if (!email)         return showErr('reg-err', 'Escribe tu email');
+      if (pass.length < 6) return showErr('reg-err', 'La contraseña necesita al menos 6 caracteres');
+      setLoading(true);
+      try {
+        const { user } = await createUserWithEmailAndPassword(auth, email, pass);
+        await setDoc(doc(db, 'usuarios', user.uid), {
+          nombre:       name.trim(),
+          email,
+          creadoEn:     new Date().toISOString(),
+          progreso:     {},
+          codigoPython: '',
+          codigoLogo:   ''
+        });
+      } catch(e) { showErr('reg-err', friendly(e.code)); setLoading(false); }
+    };
+
+    const val = id => document.getElementById(id).value.trim();
+
+    function showErr(id, text) {
+      const el = document.getElementById(id);
+      el.textContent = '⚠️ ' + text;
+      el.style.display = 'block';
+    }
+    function clearErrors() {
+      ['login-err','reg-err'].forEach(id => document.getElementById(id).style.display = 'none');
+    }
+    function setLoading(on) {
+      document.getElementById('spinner').style.display = on ? 'block' : 'none';
+      ['btn-login','btn-register'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = on;
+      });
+    }
+    function friendly(code) {
+      return ({
+        'auth/email-already-in-use': '¡Ese email ya tiene cuenta! Entra con tu contraseña.',
+        'auth/invalid-email':        'El formato del email no es correcto.',
+        'auth/weak-password':        'Contraseña demasiado sencilla. Usa letras y números.',
+        'auth/user-not-found':       'No encontramos ese email. ¿Te has registrado?',
+        'auth/wrong-password':       'Contraseña incorrecta.',
+        'auth/invalid-credential':   'Email o contraseña incorrectos.',
+        'auth/too-many-requests':    'Demasiados intentos. Espera unos minutos.',
+        'auth/network-request-failed': 'Error de conexión. Revisa el internet.'
+      })[code] || 'Error inesperado: ' + code;
+    }
+
+    // Enviar con Enter
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      if (document.getElementById('form-login').classList.contains('active')) window.doLogin();
+      else window.doRegister();
+    });
+  </script>
+</body>
+</html>

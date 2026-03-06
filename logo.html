@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐢 Terminal Logo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #EFF6FF; color: #1F2937; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: white; padding: 0 20px; height: 58px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08); gap: 12px;
+    }
+    .nav-left  { display: flex; align-items: center; gap: 10px; }
+    .nav-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .btn-back {
+      padding: 8px 14px; border-radius: 10px; border: 2px solid #E5E7EB;
+      background: white; color: #6B7280; font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-back:hover { border-color: #2563EB; color: #2563EB; }
+    .nav-title { font-size: 17px; font-weight: 900; color: #1F2937; }
+
+    .btn {
+      padding: 9px 18px; border-radius: 10px; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif; font-weight: 700; font-size: 14px; transition: all 0.2s;
+    }
+    .btn-run   { background: #2563EB; color: white; }
+    .btn-run:hover   { background: #1D4ED8; }
+    .btn-run:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-clear { background: #F3F4F6; color: #6B7280; }
+    .btn-clear:hover { background: #E5E7EB; }
+    .btn-save  { background: #6366F1; color: white; }
+    .btn-save:hover  { background: #4F46E5; }
+
+    /* ── EXAMPLES DROPDOWN ── */
+    .dropdown { position: relative; }
+    .btn-ex { background: #F3F4F6; color: #374151; }
+    .dropdown-menu {
+      display: none; position: absolute; top: 110%; right: 0; background: white;
+      border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); min-width: 210px;
+      z-index: 200; overflow: hidden;
+    }
+    .dropdown-menu.open { display: block; }
+    .dropdown-item {
+      padding: 11px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
+      color: #374151; transition: background 0.15s; display: flex; align-items: center; gap: 8px;
+    }
+    .dropdown-item:hover { background: #EFF6FF; }
+
+    /* ── WORKSPACE ── */
+    .workspace { flex: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; overflow: hidden; }
+
+    .panel {
+      background: white; border-radius: 16px; display: flex; flex-direction: column;
+      overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .panel-header {
+      padding: 10px 16px; font-size: 12px; font-weight: 800; color: #6B7280;
+      border-bottom: 1px solid #F3F4F6; letter-spacing: 0.05em; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    /* ── EDITOR ── */
+    #code {
+      flex: 1; width: 100%; resize: none; border: none; outline: none;
+      font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.7;
+      padding: 16px; color: #1F2937; background: #F8FBFF; tab-size: 2;
+    }
+
+    /* ── ERROR PANEL ── */
+    #error-panel {
+      display: none; padding: 10px 16px; background: #FEF2F2; border-top: 1px solid #FECACA;
+      color: #DC2626; font-size: 13px; font-weight: 700; flex-shrink: 0;
+    }
+
+    /* ── RIGHT: canvas + reference ── */
+    .right-col { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+
+    .canvas-wrap {
+      background: white; border-radius: 16px; flex: 1;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; flex-direction: column; overflow: hidden;
+    }
+    .canvas-body { flex: 1; display: flex; align-items: center; justify-content: center; background: #F8FBFF; padding: 8px; }
+    #logo-canvas { border-radius: 8px; border: 1px solid #E5E7EB; display: block; }
+
+    /* ── QUICK REFERENCE ── */
+    .ref-wrap {
+      background: white; border-radius: 16px; overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); max-height: 160px; flex-shrink: 0;
+    }
+    .ref-body { padding: 12px 16px; overflow-y: auto; max-height: 120px; }
+    .ref-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px 12px; }
+    .ref-item { font-size: 11px; font-weight: 700; }
+    .ref-cmd  { color: #2563EB; font-family: 'Courier New', monospace; }
+    .ref-desc { color: #6B7280; font-weight: 600; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #1F2937; color: white;
+      padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 14px;
+      z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    #save-status { font-size: 12px; color: #9CA3AF; font-weight: 600; }
+    #run-info { font-size: 11px; color: #9CA3AF; }
+
+    @media (max-width: 700px) {
+      .workspace { grid-template-columns: 1fr; }
+      .right-col { min-height: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <a href="dashboard.html" class="btn-back">← Dashboard</a>
+      <span class="nav-title">🐢 Terminal Logo</span>
+    </div>
+    <div class="nav-right">
+      <div class="dropdown">
+        <button class="btn btn-ex" onclick="toggleExamples()">📂 Ejemplos ▾</button>
+        <div class="dropdown-menu" id="examples-menu">
+          <div class="dropdown-item" onclick="loadEx('cuadrado')">⬜ Cuadrado</div>
+          <div class="dropdown-item" onclick="loadEx('triangulo')">🔺 Triángulo</div>
+          <div class="dropdown-item" onclick="loadEx('circulo')">⭕ Círculo</div>
+          <div class="dropdown-item" onclick="loadEx('estrella')">⭐ Estrella</div>
+          <div class="dropdown-item" onclick="loadEx('espiral')">🌀 Espiral</div>
+          <div class="dropdown-item" onclick="loadEx('flor')">🌸 Flor de pétalos</div>
+          <div class="dropdown-item" onclick="loadEx('casa')">🏠 Casa</div>
+          <div class="dropdown-item" onclick="loadEx('procedimiento')">⚙️ Mi procedimiento</div>
+        </div>
+      </div>
+      <button class="btn btn-clear" onclick="clearAll()">🗑️ Limpiar</button>
+      <button class="btn btn-save"  onclick="saveCode()" id="btn-save">💾 Guardar</button>
+      <button class="btn btn-run"   onclick="runCode()"  id="btn-run">▶ Ejecutar</button>
+    </div>
+  </nav>
+
+  <div class="workspace">
+
+    <!-- LEFT: Editor -->
+    <div class="panel">
+      <div class="panel-header">
+        <span>✏️ CÓDIGO LOGO</span>
+        <span id="save-status"></span>
+      </div>
+      <textarea id="code" spellcheck="false" placeholder="; Escribe comandos Logo aquí
+; Ctrl+Enter para ejecutar
+
+CS
+REPEAT 4 [FD 100 RT 90]"></textarea>
+      <div id="error-panel"></div>
+    </div>
+
+    <!-- RIGHT: Canvas + Reference -->
+    <div class="right-col">
+
+      <div class="canvas-wrap">
+        <div class="panel-header">
+          <span>🎨 DIBUJO</span>
+          <span id="run-info">Haz clic en ▶ Ejecutar</span>
+        </div>
+        <div class="canvas-body">
+          <canvas id="logo-canvas" width="440" height="340"></canvas>
+        </div>
+      </div>
+
+      <div class="ref-wrap">
+        <div class="panel-header"><span>📖 COMANDOS RÁPIDOS</span></div>
+        <div class="ref-body">
+          <div class="ref-grid">
+            <div class="ref-item"><span class="ref-cmd">FD n</span> <span class="ref-desc">avanzar</span></div>
+            <div class="ref-item"><span class="ref-cmd">BK n</span> <span class="ref-desc">retroceder</span></div>
+            <div class="ref-item"><span class="ref-cmd">RT n</span> <span class="ref-desc">girar derecha</span></div>
+            <div class="ref-item"><span class="ref-cmd">LT n</span> <span class="ref-desc">girar izquierda</span></div>
+            <div class="ref-item"><span class="ref-cmd">PU</span>   <span class="ref-desc">lápiz arriba</span></div>
+            <div class="ref-item"><span class="ref-cmd">PD</span>   <span class="ref-desc">lápiz abajo</span></div>
+            <div class="ref-item"><span class="ref-cmd">CS</span>   <span class="ref-desc">limpiar</span></div>
+            <div class="ref-item"><span class="ref-cmd">HOME</span> <span class="ref-desc">al centro</span></div>
+            <div class="ref-item"><span class="ref-cmd">SETPC n</span> <span class="ref-desc">color lápiz</span></div>
+            <div class="ref-item"><span class="ref-cmd">SETPW n</span> <span class="ref-desc">grosor</span></div>
+            <div class="ref-item"><span class="ref-cmd">REPEAT n [...]</span> <span class="ref-desc">repetir</span></div>
+            <div class="ref-item"><span class="ref-cmd">TO nombre</span> <span class="ref-desc">procedimiento</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ════════════════════════════════════════════
+    //  INTÉRPRETE LOGO  —  implementación completa
+    // ════════════════════════════════════════════
+    const canvas = document.getElementById('logo-canvas');
+    const ctx    = canvas.getContext('2d');
+
+    class LogoVM {
+      constructor() {
+        this.W = canvas.width;
+        this.H = canvas.height;
+        this.procs = {};   // procedimientos definidos por el usuario
+        this.vars  = {};   // variables globales
+        this.reset();
+      }
+
+      // Volver al estado inicial (sin borrar procedimientos)
+      reset() {
+        this.x  = this.W / 2;
+        this.y  = this.H / 2;
+        this.heading = 0;   // 0 = norte (arriba), crece en sentido horario
+        this.pd = true;
+        this.color = '#1E293B';
+        this.pw  = 2;
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 0, this.W, this.H);
+      }
+
+      // Mover la tortuga n pasos (negativo = atrás)
+      move(n) {
+        const rad = (this.heading - 90) * Math.PI / 180;
+        const nx  = this.x + n * Math.cos(rad);
+        const ny  = this.y + n * Math.sin(rad);
+        if (this.pd) {
+          ctx.beginPath();
+          ctx.strokeStyle = this.color;
+          ctx.lineWidth   = this.pw;
+          ctx.lineCap     = 'round';
+          ctx.lineJoin    = 'round';
+          ctx.moveTo(this.x, this.y);
+          ctx.lineTo(nx, ny);
+          ctx.stroke();
+        }
+        this.x = nx;
+        this.y = ny;
+      }
+
+      // ── Colores por número (compatible con FMSLogo) ──
+      numColor(n) {
+        const C = ['#000','#00C','#080','#088','#C00','#808','#880','#FFF',
+                   '#854','#F80','#555','#FAA','#AFA','#AAF','#FA0','#0FF'];
+        return C[Math.floor(Math.abs(n)) % C.length];
+      }
+
+      // ── TOKENIZADOR ──
+      tokenize(src) {
+        const toks = [];
+        const up   = src.toUpperCase();
+        let i = 0;
+        while (i < up.length) {
+          // Ignorar espacios
+          if (/\s/.test(up[i])) { i++; continue; }
+          // Comentario ;
+          if (up[i] === ';') { while (i < up.length && up[i] !== '\n') i++; continue; }
+          // Corchetes
+          if (up[i] === '[') { toks.push({ t:'[' }); i++; continue; }
+          if (up[i] === ']') { toks.push({ t:']' }); i++; continue; }
+          // Paréntesis (para expresiones)
+          if (up[i] === '(') { toks.push({ t:'(' }); i++; continue; }
+          if (up[i] === ')') { toks.push({ t:')' }); i++; continue; }
+          // Operadores aritméticos sueltos
+          if (['+','-','*','/','=','<','>'].includes(up[i])) {
+            // '-' puede ser inicio de número negativo
+            if (up[i] === '-' && i+1 < up.length && /\d/.test(up[i+1])) {
+              let n = '-'; i++;
+              while (i < up.length && /[\d.]/.test(up[i])) n += up[i++];
+              toks.push({ t:'num', v: parseFloat(n) }); continue;
+            }
+            toks.push({ t:'op', v: up[i++] }); continue;
+          }
+          // Literal de cadena "PALABRA
+          if (up[i] === '"') {
+            i++;
+            let w = '';
+            while (i < up.length && !/[\s\[\]()]/.test(up[i])) w += up[i++];
+            toks.push({ t:'str', v: w }); continue;
+          }
+          // Variable :nombre
+          if (up[i] === ':') {
+            i++;
+            let w = '';
+            while (i < up.length && /\w/.test(up[i])) w += up[i++];
+            toks.push({ t:'var', v: w }); continue;
+          }
+          // Número
+          if (/\d/.test(up[i]) || (up[i]==='.' && /\d/.test(up[i+1]||''))) {
+            let n = '';
+            while (i < up.length && /[\d.]/.test(up[i])) n += up[i++];
+            toks.push({ t:'num', v: parseFloat(n) }); continue;
+          }
+          // Palabra / comando
+          let w = '';
+          while (i < up.length && !/[\s\[\]();+\-*\/=<>]/.test(up[i])) w += up[i++];
+          if (w) toks.push({ t:'word', v: w });
+        }
+        return toks;
+      }
+
+      // ── Leer un valor numérico (número, variable, expresión básica) ──
+      readVal(toks, i) {
+        const t = toks[i];
+        if (!t) throw new Error('Se esperaba un número pero no hay más código');
+
+        if (t.t === 'num') return { v: t.v, i: i + 1 };
+
+        if (t.t === 'var') {
+          if (!(t.v in this.vars)) throw new Error(`Variable no definida: :${t.v}\nUsa MAKE "${t.v} valor primero`);
+          return { v: this.vars[t.v], i: i + 1 };
+        }
+
+        // Expresión aritmética sencilla: A OP B
+        // (sin paréntesis; para el curso básico esto es suficiente)
+        if (t.t === 'word') {
+          // ¿Es una función aritmética de Logo? SIN / COS / SQRT
+          if (t.v === 'SIN') {
+            const r = this.readVal(toks, i + 1);
+            return { v: Math.sin(r.v * Math.PI / 180), i: r.i };
+          }
+          if (t.v === 'COS') {
+            const r = this.readVal(toks, i + 1);
+            return { v: Math.cos(r.v * Math.PI / 180), i: r.i };
+          }
+          if (t.v === 'SQRT') {
+            const r = this.readVal(toks, i + 1);
+            return { v: Math.sqrt(r.v), i: r.i };
+          }
+          if (t.v === 'RANDOM') {
+            const r = this.readVal(toks, i + 1);
+            return { v: Math.floor(Math.random() * r.v), i: r.i };
+          }
+        }
+        throw new Error(`Se esperaba un número, encontré: "${t.v || t.t}"`);
+      }
+
+      // Después de leer un valor, ¿le sigue un operador? Evalúa operación binaria.
+      readExpr(toks, i) {
+        let { v: left, i: ni } = this.readVal(toks, i);
+        while (ni < toks.length && toks[ni].t === 'op') {
+          const op = toks[ni].v;
+          const { v: right, i: ni2 } = this.readVal(toks, ni + 1);
+          if      (op === '+') left += right;
+          else if (op === '-') left -= right;
+          else if (op === '*') left *= right;
+          else if (op === '/') left  = right !== 0 ? left / right : 0;
+          ni = ni2;
+        }
+        return { v: left, i: ni };
+      }
+
+      // ── Leer una lista [...] ──
+      readList(toks, i) {
+        if (!toks[i] || toks[i].t !== '[') throw new Error('Se esperaba [');
+        i++;
+        const list = []; let depth = 1;
+        while (i < toks.length) {
+          if      (toks[i].t === '[') { depth++; list.push(toks[i++]); }
+          else if (toks[i].t === ']') { depth--; if (depth === 0) { i++; break; } list.push(toks[i++]); }
+          else    { list.push(toks[i++]); }
+        }
+        return { list, i };
+      }
+
+      // ── Evaluar condición ──
+      evalCond(toks, i) {
+        const { v: left, i: ni } = this.readExpr(toks, i);
+        if (ni >= toks.length || toks[ni].t !== 'op') return { v: !!left, i: ni };
+        const op = toks[ni].v;
+        const { v: right, i: ni2 } = this.readExpr(toks, ni + 1);
+        let result;
+        if      (op === '=')  result = left === right;
+        else if (op === '<')  result = left < right;
+        else if (op === '>')  result = left > right;
+        else result = !!left;
+        return { v: result, i: ni2 };
+      }
+
+      // ── EJECUTAR lista de tokens (con variables locales opcionales) ──
+      run(toks, locals) {
+        // Guardar y restaurar variables locales (scope de procedimientos)
+        const saved = {};
+        if (locals) {
+          for (const k of Object.keys(locals)) {
+            saved[k] = this.vars[k];
+            this.vars[k] = locals[k];
+          }
+        }
+
+        let i = 0;
+        let output = '';
+
+        try {
+          while (i < toks.length) {
+            const t = toks[i];
+            if (!t) { i++; continue; }
+            if (t.t !== 'word') { i++; continue; } // token de dato suelto, skip
+
+            const cmd = t.v;
+
+            switch (cmd) {
+
+              // ──── MOVIMIENTO ────
+              case 'FD': case 'FORWARD': {
+                const r = this.readExpr(toks, i + 1); this.move(r.v); i = r.i; break;
+              }
+              case 'BK': case 'BACK': case 'BACKWARD': {
+                const r = this.readExpr(toks, i + 1); this.move(-r.v); i = r.i; break;
+              }
+              case 'RT': case 'RIGHT': {
+                const r = this.readExpr(toks, i + 1);
+                this.heading = ((this.heading + r.v) % 360 + 360) % 360; i = r.i; break;
+              }
+              case 'LT': case 'LEFT': {
+                const r = this.readExpr(toks, i + 1);
+                this.heading = ((this.heading - r.v) % 360 + 360) % 360; i = r.i; break;
+              }
+              case 'SETH': case 'SETHEADING': {
+                const r = this.readExpr(toks, i + 1);
+                this.heading = ((r.v) % 360 + 360) % 360; i = r.i; break;
+              }
+
+              // ──── LÁPIZ ────
+              case 'PU': case 'PENUP':   { this.pd = false; i++; break; }
+              case 'PD': case 'PENDOWN': { this.pd = true;  i++; break; }
+
+              // ──── PANTALLA ────
+              case 'CS': case 'CLEARSCREEN': {
+                ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, this.W, this.H);
+                this.x = this.W/2; this.y = this.H/2; this.heading = 0; i++; break;
+              }
+              case 'HOME': {
+                this.x = this.W/2; this.y = this.H/2; this.heading = 0; i++; break;
+              }
+              case 'CLEAN': {
+                ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, this.W, this.H); i++; break;
+              }
+
+              // ──── COLORES ────
+              case 'SETPC': case 'SETPENCOLOR': case 'SETCOLOR': {
+                if (toks[i+1] && toks[i+1].t === '[') {
+                  const r = this.readList(toks, i + 1);
+                  const nums = r.list.filter(x => x.t === 'num').map(x => x.v);
+                  this.color = `rgb(${nums[0]||0},${nums[1]||0},${nums[2]||0})`; i = r.i;
+                } else {
+                  const r = this.readExpr(toks, i + 1);
+                  this.color = this.numColor(r.v); i = r.i;
+                }
+                break;
+              }
+              case 'SETPW': case 'SETPENWIDTH': case 'SETPENSIZE': {
+                const r = this.readExpr(toks, i + 1);
+                this.pw = Math.max(0.5, r.v); i = r.i; break;
+              }
+              case 'SETBG': case 'SETBACKGROUND': {
+                if (toks[i+1] && toks[i+1].t === '[') {
+                  const r = this.readList(toks, i + 1);
+                  const nums = r.list.filter(x => x.t === 'num').map(x => x.v);
+                  ctx.fillStyle = `rgb(${nums[0]||255},${nums[1]||255},${nums[2]||255})`;
+                  ctx.fillRect(0, 0, this.W, this.H); i = r.i;
+                } else {
+                  const r = this.readExpr(toks, i + 1);
+                  ctx.fillStyle = this.numColor(r.v);
+                  ctx.fillRect(0, 0, this.W, this.H); i = r.i;
+                }
+                break;
+              }
+
+              // ──── REPEAT ────
+              case 'REPEAT': {
+                const rn  = this.readExpr(toks, i + 1);
+                const cnt = Math.floor(rn.v);
+                const rl  = this.readList(toks, rn.i);
+                for (let rep = 1; rep <= cnt; rep++) {
+                  this.vars['REPCOUNT'] = rep;
+                  this.run(rl.list);
+                }
+                delete this.vars['REPCOUNT'];
+                i = rl.i; break;
+              }
+
+              // ──── DEFINIR PROCEDIMIENTO: TO nombre :p1 :p2 ... body END ────
+              case 'TO': {
+                if (!toks[i+1] || toks[i+1].t !== 'word')
+                  throw new Error('TO necesita un nombre de procedimiento');
+                const pname = toks[i+1].v;
+                let j = i + 2;
+                const params = [];
+                while (j < toks.length && toks[j].t === 'var') { params.push(toks[j].v); j++; }
+                const body = [];
+                while (j < toks.length && !(toks[j].t === 'word' && toks[j].v === 'END')) {
+                  body.push(toks[j++]);
+                }
+                this.procs[pname] = { params, body };
+                i = j + 1; // saltar END
+                break;
+              }
+
+              // ──── VARIABLES: MAKE "var valor ────
+              case 'MAKE': {
+                if (!toks[i+1] || toks[i+1].t !== 'str')
+                  throw new Error('MAKE necesita un nombre entre comillas: MAKE "nombre valor');
+                const vname = toks[i+1].v;
+                const rv = this.readExpr(toks, i + 2);
+                this.vars[vname] = rv.v; i = rv.i; break;
+              }
+
+              // ──── IF / IFELSE ────
+              case 'IF': {
+                const rc = this.evalCond(toks, i + 1);
+                const rl = this.readList(toks, rc.i);
+                if (rc.v) this.run(rl.list);
+                i = rl.i; break;
+              }
+              case 'IFELSE': {
+                const rc  = this.evalCond(toks, i + 1);
+                const rlt = this.readList(toks, rc.i);
+                const rlf = this.readList(toks, rlt.i);
+                this.run(rc.v ? rlt.list : rlf.list);
+                i = rlf.i; break;
+              }
+
+              // ──── PRINT / SHOW ────
+              case 'PRINT': case 'PR': case 'SHOW': {
+                if (toks[i+1] && toks[i+1].t === '[') {
+                  const rl = this.readList(toks, i+1);
+                  output += rl.list.map(x => x.v ?? '').join(' ') + '\n'; i = rl.i;
+                } else {
+                  try {
+                    const rv = this.readExpr(toks, i + 1);
+                    output += rv.v + '\n'; i = rv.i;
+                  } catch { i++; }
+                }
+                break;
+              }
+
+              // ──── WAIT (ignorar, no puede hacerse síncrono) ────
+              case 'WAIT': { const r = this.readExpr(toks, i + 1); i = r.i; break; }
+
+              // ──── LLAMADA A PROCEDIMIENTO ────
+              default: {
+                if (cmd in this.procs) {
+                  const proc = this.procs[cmd];
+                  let j = i + 1;
+                  const args = {};
+                  for (const p of proc.params) {
+                    const rv = this.readExpr(toks, j);
+                    args[p] = rv.v; j = rv.i;
+                  }
+                  this.run(proc.body, args);
+                  i = j;
+                } else {
+                  throw new Error(`Comando no reconocido: "${cmd}"\n¿Lo escribiste correctamente?`);
+                }
+              }
+            }
+          }
+        } finally {
+          // Restaurar variables del ámbito anterior
+          if (locals) {
+            for (const k of Object.keys(locals)) {
+              if (saved[k] === undefined) delete this.vars[k];
+              else this.vars[k] = saved[k];
+            }
+          }
+        }
+        return output;
+      }
+
+      execute(src) {
+        const toks = this.tokenize(src);
+        return this.run(toks);
+      }
+    }
+
+    // Instancia global del VM
+    const logo = new LogoVM();
+
+    // Dibujar estado inicial
+    logo.reset();
+
+    // ── Ejecutar código ──
+    window.runCode = function() {
+      const code = document.getElementById('code').value;
+      const errPanel = document.getElementById('error-panel');
+      const runInfo  = document.getElementById('run-info');
+      errPanel.style.display = 'none';
+      runInfo.textContent = '⏳ Ejecutando...';
+
+      try {
+        // Limpiar pantalla antes de cada ejecución
+        logo.reset();
+        const out = logo.execute(code);
+        runInfo.textContent = '✅ Listo';
+        if (out.trim()) showToast('📟 ' + out.trim().split('\n')[0]);
+      } catch(e) {
+        errPanel.textContent = '❌ Error: ' + e.message;
+        errPanel.style.display = 'block';
+        runInfo.textContent = '❌ Error';
+      }
+    };
+
+    // ── Limpiar ──
+    window.clearAll = function() {
+      document.getElementById('code').value = '';
+      document.getElementById('error-panel').style.display = 'none';
+      logo.reset();
+      document.getElementById('run-info').textContent = 'Haz clic en ▶ Ejecutar';
+    };
+
+    // ── Ejemplos ──
+    const EXAMPLES = {
+      cuadrado: `; ⬜ Un cuadrado azul
+CS
+SETPC 1
+SETPW 3
+REPEAT 4 [FD 100 RT 90]`,
+
+      triangulo: `; 🔺 Triángulo verde
+CS
+SETPC 2
+SETPW 3
+REPEAT 3 [FD 120 RT 120]`,
+
+      circulo: `; ⭕ Aproximación de círculo
+CS
+SETPC 4
+SETPW 2
+REPEAT 36 [FD 10 RT 10]`,
+
+      estrella: `; ⭐ Estrella de 5 puntas
+CS
+SETPC 6
+SETPW 3
+REPEAT 5 [FD 120 RT 144]`,
+
+      espiral: `; 🌀 Espiral de colores
+CS
+SETPW 2
+MAKE "n 5
+MAKE "c 0
+REPEAT 30 [
+  SETPC :c
+  FD :n
+  RT 90
+  MAKE "n :n + 5
+  MAKE "c :c + 1
+]`,
+
+      flor: `; 🌸 Flor con pétalos
+CS
+SETPC 4
+SETPW 2
+TO PETALO
+  REPEAT 2 [FD 80 RT 45 FD 80 RT 135]
+END
+
+REPEAT 8 [PETALO RT 45]`,
+
+      casa: `; 🏠 Una casa sencilla
+CS
+SETPW 3
+
+; Paredes (cuadrado)
+SETPC 8
+REPEAT 4 [FD 100 RT 90]
+
+; Tejado (triángulo)
+SETPC 4
+FD 100
+RT 30
+FD 100
+RT 120
+FD 100`,
+
+      procedimiento: `; ⚙️ Usando procedimientos propios
+CS
+
+; Definir un cuadrado de tamaño variable
+TO CUADRADO :lado
+  REPEAT 4 [FD :lado RT 90]
+END
+
+; Dibujar cuadrados de diferentes tamaños
+SETPC 1
+CUADRADO 40
+
+PU FD 50 PD
+SETPC 2
+CUADRADO 60
+
+PU FD 70 PD
+SETPC 4
+CUADRADO 80`
+    };
+
+    window.loadEx = name => {
+      document.getElementById('code').value = EXAMPLES[name] || '';
+      document.getElementById('examples-menu').classList.remove('open');
+    };
+
+    window.toggleExamples = () => {
+      document.getElementById('examples-menu').classList.toggle('open');
+    };
+    document.addEventListener('click', e => {
+      if (!e.target.closest('.dropdown')) document.getElementById('examples-menu').classList.remove('open');
+    });
+
+    // Ctrl+Enter ejecutar
+    document.getElementById('code').addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') { e.preventDefault(); window.runCode(); }
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const ta = e.target, s = ta.selectionStart;
+        ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(ta.selectionEnd);
+        ta.selectionStart = ta.selectionEnd = s + 2;
+      }
+    });
+
+    // ─── FIREBASE (guardar/cargar código) ───────────────────────────
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    }
+    function setSaveStatus(t) { document.getElementById('save-status').textContent = t; }
+  </script>
+
+  <!-- Firebase (módulo independiente para no mezclar con el intérprete) -->
+  <script type="module">
+    import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged }           from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const app  = initializeApp({
+      apiKey:            "AIzaSyAMDcXrNNQ7wJiNZP-9Pmnxo9X2PPSs5kg",
+      authDomain:        "cursologopython.firebaseapp.com",
+      projectId:         "cursologopython",
+      storageBucket:     "cursologopython.firebasestorage.app",
+      messagingSenderId: "268418668428",
+      appId:             "1:268418668428:web:2a45ced6d2f4ad560b68a9"
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    let uid = null;
+
+    onAuthStateChanged(auth, async user => {
+      if (!user) { location.href = 'index.html'; return; }
+      uid = user.uid;
+      try {
+        const snap = await getDoc(doc(db, 'usuarios', uid));
+        if (snap.exists() && snap.data().codigoLogo) {
+          document.getElementById('code').value = snap.data().codigoLogo;
+          document.getElementById('save-status').textContent = '💾 Código cargado';
+        }
+      } catch(e) {}
+    });
+
+    window.saveCode = async () => {
+      if (!uid) return;
+      const code = document.getElementById('code').value;
+      document.getElementById('save-status').textContent = '⏳ Guardando...';
+      try {
+        await updateDoc(doc(db, 'usuarios', uid), { codigoLogo: code });
+        document.getElementById('save-status').textContent = '✅ Guardado';
+        const t = document.getElementById('toast');
+        t.textContent = '💾 ¡Código Logo guardado!';
+        t.classList.add('show');
+        setTimeout(() => { t.classList.remove('show'); document.getElementById('save-status').textContent = ''; }, 2500);
+      } catch(e) {
+        document.getElementById('save-status').textContent = '❌ Error al guardar';
+      }
+    };
+
+    // Autoguardado cada 60 segundos
+    setInterval(() => { if (uid) window.saveCode(); }, 60000);
+  </script>
+</body>
+</html>
