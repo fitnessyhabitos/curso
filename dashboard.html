@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🐢 Mi Curso - Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="themes.css">
+  <script>(function(){ var t=localStorage.getItem('tema'); if(t&&t!=='clasico') document.documentElement.setAttribute('data-theme',t); })();</script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Nunito', sans-serif; background: #F0F4FF; color: #1F2937; min-height: 100vh; }
@@ -18,6 +20,17 @@
     .nav-brand { font-size: 20px; font-weight: 900; color: #6366F1; display: flex; align-items: center; gap: 8px; }
     .nav-right { display: flex; align-items: center; gap: 12px; }
     .nav-user { font-size: 14px; font-weight: 700; color: #6B7280; }
+    .nav-avatar {
+      display: flex; align-items: center; gap: 10px; cursor: pointer;
+      padding: 6px 12px 6px 6px; border-radius: 40px; border: 2px solid #E5E7EB;
+      background: white; text-decoration: none; transition: all 0.2s;
+    }
+    .nav-avatar:hover { border-color: #6366F1; background: #F5F3FF; }
+    .nav-avatar .av-circle {
+      width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#6366F1,#8B5CF6);
+      display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;
+    }
+    .nav-avatar .av-name { font-size: 13px; font-weight: 700; color: #374151; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .btn-logout {
       padding: 8px 16px; border-radius: 10px; border: 2px solid #E5E7EB;
       background: white; color: #6B7280; font-family: 'Nunito', sans-serif;
@@ -127,7 +140,10 @@
   <nav>
     <div class="nav-brand">🐢 Curso Logo &amp; Python</div>
     <div class="nav-right">
-      <span class="nav-user" id="nav-name">…</span>
+      <a href="perfil.html" class="nav-avatar" title="Mi perfil">
+        <div class="av-circle" id="nav-avatar">🦁</div>
+        <span class="av-name"  id="nav-name">…</span>
+      </a>
       <button class="btn-logout" onclick="doLogout()">Salir 👋</button>
     </div>
   </nav>
@@ -244,26 +260,30 @@
         const ref  = doc(db, 'usuarios', uid);
         const snap = await getDoc(ref);
 
-        let nombre;
+        let nombre, avatar;
         if (snap.exists()) {
           const data = snap.data();
           progreso = data.progreso || {};
           nombre   = data.nombre   || user.email.split('@')[0];
+          avatar   = data.avatar   || '🦁';
         } else {
           // Cuenta auth sin documento Firestore (registrado antes de crear la BD)
           // → crear el documento ahora automáticamente
           nombre = user.email.split('@')[0];
+          avatar = '🦁';
           await setDoc(ref, {
             nombre,
             email:        user.email,
             creadoEn:     new Date().toISOString(),
             progreso:     {},
+            avatar:       '🦁',
             codigoPython: '',
             codigoLogo:   ''
           });
         }
 
         document.getElementById('nav-name').textContent     = nombre;
+        document.getElementById('nav-avatar').textContent   = avatar;
         document.getElementById('welcome-name').textContent = `¡Hola, ${nombre}! 👋`;
 
       } catch(e) {

@@ -1,0 +1,582 @@
+/* =====================================================
+   SISTEMA DE TEMAS — Curso Logo & Python
+   Uso: document.documentElement.setAttribute('data-theme', 'nombre')
+   Temas: clasico | oceano | bosque | atardecer | candy | futurista | cyberpunk
+   ===================================================== */
+
+/* ─────────────────────────────────────────────────────
+   VARIABLES BASE (Clásico — por defecto, sin data-theme)
+   ───────────────────────────────────────────────────── */
+:root {
+  --c-bg:         #667eea;
+  --c-bg2:        #764ba2;
+  --c-primary:    #6366F1;
+  --c-primary2:   #8B5CF6;
+  --c-accent:     #6366F1;
+  --c-card-bg:    #ffffff;
+  --c-card-border:rgba(0,0,0,0.06);
+  --c-nav-bg:     rgba(255,255,255,0.15);
+  --c-nav-blur:   blur(10px);
+  --c-nav-border: rgba(255,255,255,0.25);
+  --c-text-h:     #1F2937;
+  --c-text:       #374151;
+  --c-text-muted: #6B7280;
+  --c-badge-logo: #6366F1;
+  --c-badge-py:   #10B981;
+  --c-badge-proj: #F59E0B;
+  --c-shadow:     0 24px 80px rgba(0,0,0,0.18);
+  --c-shadow-sm:  0 4px 20px rgba(99,102,241,0.35);
+  --c-border:     #E5E7EB;
+  --c-input-bg:   #FAFAFA;
+  --c-tab-bg:     #F3F4F6;
+  --c-tab-active: #ffffff;
+  --c-glow:       none;
+  --c-scan:       none;
+  --c-grid:       none;
+  --font-main:    'Nunito', sans-serif;
+}
+
+/* ─────────────────────────────────────────────────────
+   🔵 OCÉANO — azul cielo, turquesa, frescura marina
+   ───────────────────────────────────────────────────── */
+[data-theme="oceano"] {
+  --c-bg:         #0EA5E9;
+  --c-bg2:        #0369A1;
+  --c-primary:    #0284C7;
+  --c-primary2:   #0EA5E9;
+  --c-accent:     #06B6D4;
+  --c-card-bg:    #F0F9FF;
+  --c-card-border:rgba(14,165,233,0.15);
+  --c-nav-bg:     rgba(255,255,255,0.2);
+  --c-nav-border: rgba(255,255,255,0.35);
+  --c-text-h:     #0C4A6E;
+  --c-text:       #075985;
+  --c-text-muted: #0EA5E9;
+  --c-badge-logo: #0284C7;
+  --c-badge-py:   #0D9488;
+  --c-badge-proj: #D97706;
+  --c-shadow:     0 24px 80px rgba(2,132,199,0.22);
+  --c-shadow-sm:  0 4px 20px rgba(2,132,199,0.4);
+  --c-border:     #BAE6FD;
+  --c-input-bg:   #E0F2FE;
+  --c-tab-bg:     #E0F2FE;
+  --c-tab-active: #ffffff;
+}
+
+[data-theme="oceano"] body {
+  background: linear-gradient(135deg, #0EA5E9 0%, #0369A1 50%, #164E63 100%);
+}
+
+[data-theme="oceano"] .btn-primary {
+  background: linear-gradient(135deg, #0284C7 0%, #0EA5E9 100%) !important;
+  box-shadow: 0 4px 20px rgba(2,132,199,0.45) !important;
+}
+
+[data-theme="oceano"] .tab.active {
+  color: #0284C7 !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   🌿 BOSQUE — verde esmeralda, tierra, naturaleza
+   ───────────────────────────────────────────────────── */
+[data-theme="bosque"] {
+  --c-bg:         #10B981;
+  --c-bg2:        #065F46;
+  --c-primary:    #059669;
+  --c-primary2:   #10B981;
+  --c-accent:     #34D399;
+  --c-card-bg:    #F0FDF4;
+  --c-card-border:rgba(16,185,129,0.15);
+  --c-nav-bg:     rgba(255,255,255,0.18);
+  --c-nav-border: rgba(255,255,255,0.3);
+  --c-text-h:     #064E3B;
+  --c-text:       #065F46;
+  --c-text-muted: #059669;
+  --c-badge-logo: #0D9488;
+  --c-badge-py:   #059669;
+  --c-badge-proj: #D97706;
+  --c-shadow:     0 24px 80px rgba(5,150,105,0.22);
+  --c-shadow-sm:  0 4px 20px rgba(5,150,105,0.4);
+  --c-border:     #A7F3D0;
+  --c-input-bg:   #ECFDF5;
+  --c-tab-bg:     #D1FAE5;
+  --c-tab-active: #ffffff;
+}
+
+[data-theme="bosque"] body {
+  background: linear-gradient(135deg, #059669 0%, #065F46 50%, #022C22 100%);
+}
+
+[data-theme="bosque"] .btn-primary {
+  background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+  box-shadow: 0 4px 20px rgba(5,150,105,0.45) !important;
+}
+
+[data-theme="bosque"] .tab.active {
+  color: #059669 !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   🌅 ATARDECER — naranja, coral, calidez
+   ───────────────────────────────────────────────────── */
+[data-theme="atardecer"] {
+  --c-bg:         #F97316;
+  --c-bg2:        #DC2626;
+  --c-primary:    #EA580C;
+  --c-primary2:   #F97316;
+  --c-accent:     #FB923C;
+  --c-card-bg:    #FFF7ED;
+  --c-card-border:rgba(249,115,22,0.15);
+  --c-nav-bg:     rgba(255,255,255,0.18);
+  --c-nav-border: rgba(255,255,255,0.3);
+  --c-text-h:     #7C2D12;
+  --c-text:       #9A3412;
+  --c-text-muted: #EA580C;
+  --c-badge-logo: #EA580C;
+  --c-badge-py:   #B45309;
+  --c-badge-proj: #7C3AED;
+  --c-shadow:     0 24px 80px rgba(234,88,12,0.22);
+  --c-shadow-sm:  0 4px 20px rgba(234,88,12,0.4);
+  --c-border:     #FDBA74;
+  --c-input-bg:   #FEF3C7;
+  --c-tab-bg:     #FED7AA;
+  --c-tab-active: #ffffff;
+}
+
+[data-theme="atardecer"] body {
+  background: linear-gradient(135deg, #F97316 0%, #DC2626 50%, #7C2D12 100%);
+}
+
+[data-theme="atardecer"] .btn-primary {
+  background: linear-gradient(135deg, #EA580C 0%, #F97316 100%) !important;
+  box-shadow: 0 4px 20px rgba(234,88,12,0.45) !important;
+}
+
+[data-theme="atardecer"] .tab.active {
+  color: #EA580C !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   🍬 CANDY — rosa, lila, pastel dulce
+   ───────────────────────────────────────────────────── */
+[data-theme="candy"] {
+  --c-bg:         #EC4899;
+  --c-bg2:        #8B5CF6;
+  --c-primary:    #DB2777;
+  --c-primary2:   #EC4899;
+  --c-accent:     #F472B6;
+  --c-card-bg:    #FDF2F8;
+  --c-card-border:rgba(236,72,153,0.15);
+  --c-nav-bg:     rgba(255,255,255,0.2);
+  --c-nav-border: rgba(255,255,255,0.35);
+  --c-text-h:     #831843;
+  --c-text:       #9D174D;
+  --c-text-muted: #DB2777;
+  --c-badge-logo: #9333EA;
+  --c-badge-py:   #DB2777;
+  --c-badge-proj: #D97706;
+  --c-shadow:     0 24px 80px rgba(219,39,119,0.22);
+  --c-shadow-sm:  0 4px 20px rgba(219,39,119,0.4);
+  --c-border:     #FBCFE8;
+  --c-input-bg:   #FCE7F3;
+  --c-tab-bg:     #FCE7F3;
+  --c-tab-active: #ffffff;
+}
+
+[data-theme="candy"] body {
+  background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 50%, #6D28D9 100%);
+}
+
+[data-theme="candy"] .btn-primary {
+  background: linear-gradient(135deg, #DB2777 0%, #EC4899 100%) !important;
+  box-shadow: 0 4px 20px rgba(219,39,119,0.45) !important;
+}
+
+[data-theme="candy"] .tab.active {
+  color: #DB2777 !important;
+}
+
+/* ─────────────────────────────────────────────────────
+   🌃 FUTURISTA — oscuro, azul-cyan, liquid glass
+   ───────────────────────────────────────────────────── */
+[data-theme="futurista"] {
+  --c-bg:         #0F172A;
+  --c-bg2:        #1E293B;
+  --c-primary:    #00D4FF;
+  --c-primary2:   #0EA5E9;
+  --c-accent:     #38BDF8;
+  --c-card-bg:    rgba(15,23,42,0.6);
+  --c-card-border:rgba(0,212,255,0.2);
+  --c-nav-bg:     rgba(0,212,255,0.08);
+  --c-nav-border: rgba(0,212,255,0.25);
+  --c-text-h:     #E2E8F0;
+  --c-text:       #CBD5E1;
+  --c-text-muted: #64748B;
+  --c-badge-logo: #0EA5E9;
+  --c-badge-py:   #06B6D4;
+  --c-badge-proj: #F59E0B;
+  --c-shadow:     0 24px 80px rgba(0,212,255,0.15);
+  --c-shadow-sm:  0 4px 20px rgba(0,212,255,0.35);
+  --c-border:     rgba(0,212,255,0.2);
+  --c-input-bg:   rgba(0,212,255,0.05);
+  --c-tab-bg:     rgba(0,212,255,0.08);
+  --c-tab-active: rgba(0,212,255,0.18);
+  --c-glow:       0 0 20px rgba(0,212,255,0.5), 0 0 60px rgba(0,212,255,0.15);
+}
+
+[data-theme="futurista"] body {
+  background: linear-gradient(135deg, #0F172A 0%, #0D1B2A 50%, #091426 100%);
+  position: relative;
+  overflow-x: hidden;
+}
+
+[data-theme="futurista"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* Liquid glass cards — futurista */
+[data-theme="futurista"] .card,
+[data-theme="futurista"] .module-card,
+[data-theme="futurista"] .terminal-card,
+[data-theme="futurista"] .stat-card,
+[data-theme="futurista"] .profile-card,
+[data-theme="futurista"] .example-card,
+[data-theme="futurista"] .ref-panel {
+  background: rgba(14,165,233,0.07) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border: 1px solid rgba(0,212,255,0.2) !important;
+  box-shadow: 0 8px 32px rgba(0,212,255,0.08), inset 0 1px 0 rgba(255,255,255,0.05) !important;
+}
+
+[data-theme="futurista"] .nav {
+  background: rgba(0,212,255,0.06) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-bottom: 1px solid rgba(0,212,255,0.2) !important;
+}
+
+[data-theme="futurista"] .nav-brand,
+[data-theme="futurista"] h1,
+[data-theme="futurista"] .welcome-text {
+  color: #00D4FF !important;
+  text-shadow: 0 0 20px rgba(0,212,255,0.5) !important;
+}
+
+[data-theme="futurista"] .btn-primary {
+  background: linear-gradient(135deg, #0EA5E9 0%, #00D4FF 100%) !important;
+  box-shadow: 0 4px 20px rgba(0,212,255,0.5), 0 0 40px rgba(0,212,255,0.15) !important;
+  color: #0F172A !important;
+  font-weight: 900 !important;
+}
+
+[data-theme="futurista"] .tab-bar,
+[data-theme="futurista"] .tabs {
+  background: rgba(0,212,255,0.08) !important;
+  border: 1px solid rgba(0,212,255,0.15) !important;
+}
+
+[data-theme="futurista"] .tab.active {
+  background: rgba(0,212,255,0.18) !important;
+  color: #00D4FF !important;
+}
+
+[data-theme="futurista"] .field input,
+[data-theme="futurista"] textarea,
+[data-theme="futurista"] .editor {
+  background: rgba(0,212,255,0.05) !important;
+  border-color: rgba(0,212,255,0.2) !important;
+  color: #E2E8F0 !important;
+}
+
+[data-theme="futurista"] .field input:focus,
+[data-theme="futurista"] textarea:focus {
+  border-color: #00D4FF !important;
+  box-shadow: 0 0 0 3px rgba(0,212,255,0.15) !important;
+}
+
+[data-theme="futurista"] .module-logo { border-color: rgba(14,165,233,0.4) !important; }
+[data-theme="futurista"] .module-python { border-color: rgba(6,182,212,0.4) !important; }
+[data-theme="futurista"] .module-project { border-color: rgba(245,158,11,0.4) !important; }
+
+[data-theme="futurista"] .badge-logo { background: rgba(14,165,233,0.2) !important; color: #38BDF8 !important; }
+[data-theme="futurista"] .badge-python { background: rgba(6,182,212,0.2) !important; color: #22D3EE !important; }
+[data-theme="futurista"] .badge-project { background: rgba(245,158,11,0.2) !important; color: #FCD34D !important; }
+
+/* ─────────────────────────────────────────────────────
+   ⚡ CYBERPUNK — negro, gris, rojo, blanco + liquid glass + scanlines
+   TEMA ESPECIAL
+   ───────────────────────────────────────────────────── */
+[data-theme="cyberpunk"] {
+  --c-bg:         #0A0A0A;
+  --c-bg2:        #111111;
+  --c-primary:    #FF003F;
+  --c-primary2:   #FF1A54;
+  --c-accent:     #FF003F;
+  --c-card-bg:    rgba(20,20,20,0.75);
+  --c-card-border:rgba(255,0,63,0.25);
+  --c-nav-bg:     rgba(0,0,0,0.7);
+  --c-nav-border: rgba(255,0,63,0.35);
+  --c-text-h:     #FFFFFF;
+  --c-text:       #D1D5DB;
+  --c-text-muted: #6B7280;
+  --c-badge-logo: #FF003F;
+  --c-badge-py:   #CC0033;
+  --c-badge-proj: #B0B0B0;
+  --c-shadow:     0 24px 80px rgba(255,0,63,0.12);
+  --c-shadow-sm:  0 4px 20px rgba(255,0,63,0.4);
+  --c-border:     rgba(255,0,63,0.2);
+  --c-input-bg:   rgba(255,0,63,0.04);
+  --c-tab-bg:     rgba(255,0,63,0.07);
+  --c-tab-active: rgba(255,0,63,0.18);
+  --c-glow:       0 0 20px rgba(255,0,63,0.7), 0 0 60px rgba(255,0,63,0.2);
+  --font-main:    'Nunito', monospace;
+}
+
+[data-theme="cyberpunk"] body {
+  background: #0A0A0A;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Fondo con ruido + grid sutil */
+[data-theme="cyberpunk"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 3px,
+      rgba(255,0,63,0.018) 3px,
+      rgba(255,0,63,0.018) 4px
+    ),
+    linear-gradient(rgba(255,0,63,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,0,63,0.03) 1px, transparent 1px);
+  background-size: 100% 4px, 60px 60px, 60px 60px;
+}
+
+/* Línea roja en parte superior — borde de neón */
+[data-theme="cyberpunk"] body::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FF003F, transparent);
+  box-shadow: 0 0 10px rgba(255,0,63,0.8);
+  z-index: 1000;
+  pointer-events: none;
+}
+
+/* Liquid glass cards — cyberpunk */
+[data-theme="cyberpunk"] .card,
+[data-theme="cyberpunk"] .module-card,
+[data-theme="cyberpunk"] .terminal-card,
+[data-theme="cyberpunk"] .stat-card,
+[data-theme="cyberpunk"] .profile-card,
+[data-theme="cyberpunk"] .example-card,
+[data-theme="cyberpunk"] .ref-panel {
+  background: rgba(20,20,20,0.75) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255,0,63,0.25) !important;
+  box-shadow:
+    0 8px 32px rgba(255,0,63,0.08),
+    inset 0 1px 0 rgba(255,255,255,0.03),
+    0 0 0 0.5px rgba(255,0,63,0.1) !important;
+}
+
+[data-theme="cyberpunk"] .nav {
+  background: rgba(0,0,0,0.8) !important;
+  backdrop-filter: blur(24px) !important;
+  -webkit-backdrop-filter: blur(24px) !important;
+  border-bottom: 1px solid rgba(255,0,63,0.35) !important;
+  box-shadow: 0 0 20px rgba(255,0,63,0.1) !important;
+}
+
+[data-theme="cyberpunk"] .nav-brand,
+[data-theme="cyberpunk"] .logo-brand {
+  color: #FF003F !important;
+  text-shadow: 0 0 20px rgba(255,0,63,0.8), 0 0 40px rgba(255,0,63,0.4) !important;
+  letter-spacing: 1px;
+}
+
+[data-theme="cyberpunk"] h1,
+[data-theme="cyberpunk"] .welcome-text {
+  color: #FFFFFF !important;
+  text-shadow: 0 0 10px rgba(255,255,255,0.15) !important;
+}
+
+[data-theme="cyberpunk"] .header h1 {
+  color: #FFFFFF !important;
+  letter-spacing: 1px;
+}
+
+[data-theme="cyberpunk"] .header .emoji {
+  filter: drop-shadow(0 0 12px rgba(255,0,63,0.6));
+}
+
+[data-theme="cyberpunk"] .btn-primary {
+  background: linear-gradient(135deg, #FF003F 0%, #CC0033 100%) !important;
+  box-shadow: 0 4px 20px rgba(255,0,63,0.5), 0 0 40px rgba(255,0,63,0.2) !important;
+  color: #FFFFFF !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  font-size: 14px !important;
+}
+
+[data-theme="cyberpunk"] .btn-primary:hover {
+  box-shadow: 0 8px 28px rgba(255,0,63,0.65), 0 0 60px rgba(255,0,63,0.3) !important;
+}
+
+[data-theme="cyberpunk"] .tab-bar,
+[data-theme="cyberpunk"] .tabs {
+  background: rgba(255,0,63,0.06) !important;
+  border: 1px solid rgba(255,0,63,0.15) !important;
+}
+
+[data-theme="cyberpunk"] .tab {
+  color: #6B7280 !important;
+}
+
+[data-theme="cyberpunk"] .tab.active {
+  background: rgba(255,0,63,0.15) !important;
+  color: #FF003F !important;
+  text-shadow: 0 0 10px rgba(255,0,63,0.4) !important;
+}
+
+[data-theme="cyberpunk"] .field label,
+[data-theme="cyberpunk"] label {
+  color: #D1D5DB !important;
+}
+
+[data-theme="cyberpunk"] .field input,
+[data-theme="cyberpunk"] textarea,
+[data-theme="cyberpunk"] .editor {
+  background: rgba(255,0,63,0.04) !important;
+  border: 2px solid rgba(255,0,63,0.2) !important;
+  color: #FFFFFF !important;
+}
+
+[data-theme="cyberpunk"] .field input::placeholder,
+[data-theme="cyberpunk"] textarea::placeholder {
+  color: rgba(255,255,255,0.2) !important;
+}
+
+[data-theme="cyberpunk"] .field input:focus,
+[data-theme="cyberpunk"] textarea:focus {
+  border-color: #FF003F !important;
+  box-shadow: 0 0 0 3px rgba(255,0,63,0.15), 0 0 20px rgba(255,0,63,0.1) !important;
+}
+
+/* Módulos / Cards de contenido */
+[data-theme="cyberpunk"] .module-logo {
+  border-color: rgba(255,0,63,0.4) !important;
+  border-left: 4px solid #FF003F !important;
+}
+[data-theme="cyberpunk"] .module-python {
+  border-color: rgba(200,0,40,0.4) !important;
+  border-left: 4px solid #CC0033 !important;
+}
+[data-theme="cyberpunk"] .module-project {
+  border-color: rgba(180,180,180,0.3) !important;
+  border-left: 4px solid #808080 !important;
+}
+
+[data-theme="cyberpunk"] .badge-logo {
+  background: rgba(255,0,63,0.15) !important;
+  color: #FF003F !important;
+  text-shadow: 0 0 8px rgba(255,0,63,0.4) !important;
+}
+[data-theme="cyberpunk"] .badge-python {
+  background: rgba(200,0,50,0.15) !important;
+  color: #FF4466 !important;
+}
+[data-theme="cyberpunk"] .badge-project {
+  background: rgba(180,180,180,0.1) !important;
+  color: #AAAAAA !important;
+}
+
+/* Progress bar */
+[data-theme="cyberpunk"] .progress-bar-fill,
+[data-theme="cyberpunk"] .progress-fill {
+  background: linear-gradient(90deg, #FF003F, #FF1A54) !important;
+  box-shadow: 0 0 10px rgba(255,0,63,0.5) !important;
+}
+
+/* Stats */
+[data-theme="cyberpunk"] .stat-number {
+  color: #FF003F !important;
+  text-shadow: 0 0 10px rgba(255,0,63,0.4) !important;
+}
+
+/* Output terminal */
+[data-theme="cyberpunk"] .output,
+[data-theme="cyberpunk"] #output,
+[data-theme="cyberpunk"] .logo-output {
+  background: #050505 !important;
+  border: 1px solid rgba(255,0,63,0.2) !important;
+  color: #FF4466 !important;
+}
+
+/* Scrollbar ciberpunk */
+[data-theme="cyberpunk"] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+[data-theme="cyberpunk"] ::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+[data-theme="cyberpunk"] ::-webkit-scrollbar-thumb {
+  background: rgba(255,0,63,0.4);
+  border-radius: 3px;
+}
+[data-theme="cyberpunk"] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255,0,63,0.7);
+}
+
+/* Avatar nav */
+[data-theme="cyberpunk"] .nav-avatar .av-circle {
+  border: 2px solid rgba(255,0,63,0.5) !important;
+  box-shadow: 0 0 10px rgba(255,0,63,0.3) !important;
+}
+
+/* Alert de error */
+[data-theme="cyberpunk"] .alert-error {
+  background: rgba(255,0,63,0.1) !important;
+  border-color: rgba(255,0,63,0.3) !important;
+  color: #FF4466 !important;
+}
+
+/* Links */
+[data-theme="cyberpunk"] a { color: #FF003F; }
+[data-theme="cyberpunk"] a:hover { color: #FF4466; text-shadow: 0 0 8px rgba(255,0,63,0.5); }
+
+/* ─────────────────────────────────────────────────────
+   UTILIDADES GLOBALES — compartidas por todos los temas
+   (aplican CSS vars definidas arriba)
+   ───────────────────────────────────────────────────── */
+
+/* Suavizado general de transiciones al cambiar tema */
+body,
+.card, .module-card, .terminal-card, .stat-card,
+.profile-card, .example-card, .ref-panel,
+.nav, .btn-primary, .field input, textarea {
+  transition:
+    background 0.35s ease,
+    border-color 0.35s ease,
+    color 0.25s ease,
+    box-shadow 0.35s ease;
+}

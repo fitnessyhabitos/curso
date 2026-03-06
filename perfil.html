@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>👤 Mi Perfil</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="themes.css">
+  <script>(function(){ var t=localStorage.getItem('tema'); if(t&&t!=='clasico') document.documentElement.setAttribute('data-theme',t); })();</script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #F0F4FF; color: #1F2937; min-height: 100vh; }
+
+    nav {
+      background: white; padding: 0 24px; height: 58px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .btn-back {
+      padding: 8px 16px; border-radius: 10px; border: 2px solid #E5E7EB;
+      background: white; color: #6B7280; font-family: 'Nunito', sans-serif;
+      font-weight: 700; font-size: 13px; cursor: pointer; transition: all 0.2s; text-decoration: none;
+    }
+    .btn-back:hover { border-color: #6366F1; color: #6366F1; }
+    .nav-title { font-size: 17px; font-weight: 900; color: #1F2937; }
+
+    main { max-width: 620px; margin: 0 auto; padding: 32px 20px 60px; }
+
+    /* ── AVATAR HERO ── */
+    .avatar-hero {
+      text-align: center; background: linear-gradient(135deg,#6366F1,#8B5CF6);
+      border-radius: 24px; padding: 36px 24px 28px; color: white; margin-bottom: 24px;
+    }
+    .avatar-display {
+      width: 110px; height: 110px; border-radius: 50%; background: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 60px; margin: 0 auto 16px; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2); transition: transform 0.2s;
+      border: 4px solid rgba(255,255,255,0.4);
+    }
+    .avatar-display:hover { transform: scale(1.05); }
+    .avatar-hero h2 { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+    .avatar-hero p  { font-size: 13px; opacity: 0.85; font-weight: 600; }
+    .change-avatar-btn {
+      margin-top: 14px; padding: 8px 20px; border-radius: 20px;
+      background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.4);
+      color: white; font-family: 'Nunito',sans-serif; font-weight: 700; font-size: 13px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .change-avatar-btn:hover { background: rgba(255,255,255,0.35); }
+
+    /* ── AVATAR PICKER ── */
+    .avatar-picker {
+      display: none; background: white; border-radius: 20px; padding: 20px 24px;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08); margin-bottom: 20px;
+    }
+    .avatar-picker.open { display: block; }
+    .picker-title { font-size: 13px; font-weight: 800; color: #6B7280; margin-bottom: 14px; letter-spacing: 0.05em; }
+    .picker-section { margin-bottom: 16px; }
+    .picker-section-label { font-size: 12px; font-weight: 700; color: #9CA3AF; margin-bottom: 8px; }
+    .emoji-grid { display: grid; grid-template-columns: repeat(9, 1fr); gap: 6px; }
+    .emoji-opt {
+      width: 100%; aspect-ratio: 1; border-radius: 10px; border: 2px solid transparent;
+      background: #F9FAFB; font-size: 22px; display: flex; align-items: center;
+      justify-content: center; cursor: pointer; transition: all 0.15s;
+    }
+    .emoji-opt:hover   { background: #EEF2FF; border-color: #C7D2FE; transform: scale(1.1); }
+    .emoji-opt.active  { background: #EEF2FF; border-color: #6366F1; }
+
+    /* ── FORM CARD ── */
+    .card {
+      background: white; border-radius: 20px; padding: 28px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06); margin-bottom: 16px;
+    }
+    .card-title { font-size: 14px; font-weight: 800; color: #6B7280; margin-bottom: 20px; letter-spacing: 0.05em; }
+
+    .field { margin-bottom: 20px; }
+    .field label { display: block; font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 7px; }
+    .field input[type="text"],
+    .field input[type="number"] {
+      width: 100%; padding: 13px 16px; border: 2px solid #E5E7EB; border-radius: 12px;
+      font-family: 'Nunito', sans-serif; font-size: 15px; color: #1F2937;
+      outline: none; transition: border-color 0.2s; background: #FAFAFA;
+    }
+    .field input:focus { border-color: #6366F1; background: white; }
+    .field input::placeholder { color: #D1D5DB; }
+
+    /* ── COLOR PICKER ── */
+    .color-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+    .color-opt {
+      width: 38px; height: 38px; border-radius: 50%; cursor: pointer;
+      border: 3px solid transparent; transition: all 0.15s; flex-shrink: 0;
+    }
+    .color-opt:hover  { transform: scale(1.15); }
+    .color-opt.active { border-color: #1F2937; transform: scale(1.1); }
+
+    /* ── THEME PICKER ── */
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+    }
+    .theme-card {
+      border-radius: 16px; overflow: hidden; cursor: pointer;
+      border: 3px solid transparent; transition: all 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .theme-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+    .theme-card.active { border-color: #1F2937; }
+    .theme-preview {
+      height: 60px;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .theme-name {
+      font-size: 11px; font-weight: 800; padding: 8px;
+      text-align: center; background: white; color: #374151;
+    }
+    .theme-check {
+      position: absolute; top: 6px; right: 6px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(0,0,0,0.5); color: white;
+      display: none; align-items: center; justify-content: center;
+      font-size: 13px;
+    }
+    .theme-card.active .theme-check { display: flex; }
+    .theme-special-badge {
+      position: absolute; top: 6px; left: 6px;
+      background: #FF003F; color: white;
+      font-size: 9px; font-weight: 900; padding: 2px 6px;
+      border-radius: 6px; letter-spacing: 0.05em;
+    }
+
+    /* Theme preview colors */
+    .tp-clasico   { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+    .tp-oceano    { background: linear-gradient(135deg, #0EA5E9 0%, #0369A1 100%); }
+    .tp-bosque    { background: linear-gradient(135deg, #10B981 0%, #065F46 100%); }
+    .tp-atardecer { background: linear-gradient(135deg, #F97316 0%, #DC2626 100%); }
+    .tp-candy     { background: linear-gradient(135deg, #EC4899 0%, #8B5CF6 100%); }
+    .tp-futurista {
+      background: linear-gradient(135deg, #0F172A 0%, #0D1B2A 100%);
+      border: 1px solid rgba(0,212,255,0.4);
+    }
+    .tp-futurista::after {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.08) 1px, transparent 1px);
+      background-size: 16px 16px;
+    }
+    .tp-futurista .ti { color: #00D4FF; text-shadow: 0 0 8px rgba(0,212,255,0.8); font-size: 20px; z-index:1; }
+    .tp-cyberpunk {
+      background: #0A0A0A;
+      border: 1px solid rgba(255,0,63,0.4);
+      position: relative; overflow: hidden;
+    }
+    .tp-cyberpunk::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent 0px, transparent 3px,
+        rgba(255,0,63,0.06) 3px, rgba(255,0,63,0.06) 4px
+      );
+    }
+    .tp-cyberpunk .ti {
+      color: #FF003F;
+      text-shadow: 0 0 10px rgba(255,0,63,0.9), 0 0 20px rgba(255,0,63,0.4);
+      font-size: 20px; z-index: 1;
+    }
+
+    /* ── STATS INFO ── */
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .info-item {
+      background: #F9FAFB; border-radius: 12px; padding: 14px 16px;
+    }
+    .info-item .lbl { font-size: 12px; font-weight: 700; color: #9CA3AF; margin-bottom: 4px; }
+    .info-item .val { font-size: 18px; font-weight: 800; color: #1F2937; }
+
+    /* ── SAVE BUTTON ── */
+    .btn-save {
+      width: 100%; padding: 16px; border: none; border-radius: 16px;
+      background: linear-gradient(135deg,#6366F1,#8B5CF6);
+      color: white; font-family: 'Nunito',sans-serif; font-weight: 900;
+      font-size: 17px; cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.4);
+    }
+    .btn-save:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(99,102,241,0.5); }
+    .btn-save:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed; bottom: 24px; right: 24px; background: #1F2937; color: white;
+      padding: 12px 20px; border-radius: 12px; font-weight: 700; font-size: 14px;
+      z-index: 999; transform: translateY(80px); opacity: 0; transition: all 0.3s;
+    }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    /* ── LOADER ── */
+    #loader {
+      position: fixed; inset: 0; background: white; display: flex;
+      align-items: center; justify-content: center; font-size: 48px;
+      z-index: 9999; transition: opacity 0.3s;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loader">👤</div>
+
+  <nav>
+    <a href="dashboard.html" class="btn-back">← Dashboard</a>
+    <span class="nav-title">👤 Mi Perfil</span>
+    <div style="width:90px"></div>
+  </nav>
+
+  <main>
+
+    <!-- Avatar hero -->
+    <div class="avatar-hero">
+      <div class="avatar-display" id="avatar-big" onclick="togglePicker()">🦁</div>
+      <h2 id="hero-name">Mi perfil</h2>
+      <p id="hero-email">cargando...</p>
+      <button class="change-avatar-btn" onclick="togglePicker()">🎨 Cambiar avatar</button>
+    </div>
+
+    <!-- Avatar picker -->
+    <div class="avatar-picker" id="avatar-picker">
+      <div class="picker-title">✨ ELIGE TU AVATAR</div>
+
+      <div class="picker-section">
+        <div class="picker-section-label">🐾 Animales</div>
+        <div class="emoji-grid" id="grid-animales"></div>
+      </div>
+      <div class="picker-section">
+        <div class="picker-section-label">🚀 Aventura</div>
+        <div class="emoji-grid" id="grid-aventura"></div>
+      </div>
+      <div class="picker-section">
+        <div class="picker-section-label">🎮 Tecnología</div>
+        <div class="emoji-grid" id="grid-tech"></div>
+      </div>
+    </div>
+
+    <!-- Datos personales -->
+    <div class="card">
+      <div class="card-title">📝 MIS DATOS</div>
+
+      <div class="field">
+        <label>👤 Mi nombre</label>
+        <input type="text" id="inp-nombre" placeholder="¿Cómo te llamas?" maxlength="30">
+      </div>
+
+      <div class="field">
+        <label>🎂 Mi edad</label>
+        <input type="number" id="inp-edad" placeholder="¿Cuántos años tienes?" min="5" max="18">
+      </div>
+
+      <div class="field">
+        <label>🎨 Mi color favorito</label>
+        <div class="color-grid" id="color-grid"></div>
+      </div>
+    </div>
+
+    <!-- ── TEMA VISUAL ── -->
+    <div class="card">
+      <div class="card-title">🎨 MI TEMA VISUAL</div>
+      <p style="font-size:13px;color:#6B7280;margin-bottom:18px;font-weight:600;">
+        Elige cómo quieres que se vea toda la web. ¡El tema se guarda automáticamente!
+      </p>
+
+      <div class="themes-grid" id="themes-grid">
+
+        <!-- Clásico -->
+        <div class="theme-card active" id="tc-clasico" onclick="selectTheme('clasico')">
+          <div class="theme-preview tp-clasico">
+            <span style="font-size:22px">🟣</span>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name">Clásico</div>
+        </div>
+
+        <!-- Océano -->
+        <div class="theme-card" id="tc-oceano" onclick="selectTheme('oceano')">
+          <div class="theme-preview tp-oceano">
+            <span style="font-size:22px">🌊</span>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name">Océano</div>
+        </div>
+
+        <!-- Bosque -->
+        <div class="theme-card" id="tc-bosque" onclick="selectTheme('bosque')">
+          <div class="theme-preview tp-bosque">
+            <span style="font-size:22px">🌿</span>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name">Bosque</div>
+        </div>
+
+        <!-- Atardecer -->
+        <div class="theme-card" id="tc-atardecer" onclick="selectTheme('atardecer')">
+          <div class="theme-preview tp-atardecer">
+            <span style="font-size:22px">🌅</span>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name">Atardecer</div>
+        </div>
+
+        <!-- Candy -->
+        <div class="theme-card" id="tc-candy" onclick="selectTheme('candy')">
+          <div class="theme-preview tp-candy">
+            <span style="font-size:22px">🍬</span>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name">Candy</div>
+        </div>
+
+        <!-- Futurista -->
+        <div class="theme-card" id="tc-futurista" onclick="selectTheme('futurista')">
+          <div class="theme-preview tp-futurista">
+            <span class="ti">🌃</span>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name" style="background:#0F172A;color:#00D4FF;">Futurista</div>
+        </div>
+
+        <!-- Cyberpunk ⚡ ESPECIAL -->
+        <div class="theme-card" id="tc-cyberpunk" onclick="selectTheme('cyberpunk')">
+          <div class="theme-preview tp-cyberpunk">
+            <span class="ti">⚡</span>
+            <div class="theme-special-badge">ESPECIAL</div>
+            <div class="theme-check">✓</div>
+          </div>
+          <div class="theme-name" style="background:#111;color:#FF003F;">Cyberpunk</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Estadísticas -->
+    <div class="card">
+      <div class="card-title">📊 MIS ESTADÍSTICAS</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="lbl">En el curso desde</div>
+          <div class="val" id="stat-desde">–</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Módulos completados</div>
+          <div class="val" id="stat-modulos">0 / 13</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Progreso</div>
+          <div class="val" id="stat-pct">0%</div>
+        </div>
+        <div class="info-item">
+          <div class="lbl">Email de acceso</div>
+          <div class="val" id="stat-email" style="font-size:12px;word-break:break-all;">–</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-save" id="btn-save" onclick="guardar()">💾 Guardar cambios</button>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ── Emojis por categorías ──
+    const EMOJIS = {
+      animales: ['🦁','🐯','🐻','🦊','🐸','🦋','🦄','🐬','🦅','🐉','🦖','🐙','🐺','🦓','🦒','🐘','🦜','🐝'],
+      aventura: ['🚀','⭐','🌙','🌈','⚡','🔥','❄️','🌊','🏔️','🎯','🏆','💎','🗝️','🧭','🪄','🎪','🎭','🎠'],
+      tech:     ['🤖','👾','🎮','💻','🕹️','🎲','🔭','🔬','⚗️','🧬','💡','🌐','📡','🛸','🦾','🧠','🎵','🎨'],
+    };
+
+    const COLORS = [
+      '#6366F1','#8B5CF6','#EC4899','#EF4444','#F59E0B',
+      '#10B981','#06B6D4','#3B82F6','#1F2937','#6B7280',
+    ];
+
+    let selectedAvatar = '🦁';
+    let selectedColor  = '#6366F1';
+    let selectedTheme  = localStorage.getItem('tema') || 'clasico';
+
+    // Renderizar grids de emojis
+    Object.entries(EMOJIS).forEach(([cat, emojis]) => {
+      const grid = document.getElementById('grid-' + cat);
+      emojis.forEach(e => {
+        const btn = document.createElement('button');
+        btn.className = 'emoji-opt';
+        btn.textContent = e;
+        btn.onclick = () => selectAvatar(e);
+        grid.appendChild(btn);
+      });
+    });
+
+    // Renderizar grid de colores
+    COLORS.forEach(c => {
+      const div = document.createElement('div');
+      div.className = 'color-opt';
+      div.style.background = c;
+      div.dataset.color = c;
+      div.onclick = () => selectColor(c);
+      document.getElementById('color-grid').appendChild(div);
+    });
+
+    function selectAvatar(emoji) {
+      selectedAvatar = emoji;
+      document.getElementById('avatar-big').textContent = emoji;
+      document.querySelectorAll('.emoji-opt').forEach(b => {
+        b.classList.toggle('active', b.textContent === emoji);
+      });
+    }
+
+    function selectColor(color) {
+      selectedColor = color;
+      document.querySelectorAll('.color-opt').forEach(d => {
+        d.classList.toggle('active', d.dataset.color === color);
+      });
+    }
+
+    function togglePicker() {
+      document.getElementById('avatar-picker').classList.toggle('open');
+    }
+
+    // ── Selector de tema ──
+    // Marca la tarjeta activa al cargar
+    (function initThemeCards() {
+      const t = selectedTheme;
+      document.querySelectorAll('.theme-card').forEach(c => {
+        c.classList.toggle('active', c.id === 'tc-' + t);
+      });
+    })();
+
+    window.selectTheme = function(name) {
+      selectedTheme = name;
+
+      // Aplicar inmediatamente
+      if (name === 'clasico') {
+        document.documentElement.removeAttribute('data-theme');
+      } else {
+        document.documentElement.setAttribute('data-theme', name);
+      }
+
+      // Guardar en localStorage para carga instantánea en cualquier página
+      localStorage.setItem('tema', name);
+
+      // Actualizar tarjetas activas
+      document.querySelectorAll('.theme-card').forEach(c => {
+        c.classList.toggle('active', c.id === 'tc-' + name);
+      });
+
+      // Toast inmediato
+      const labels = {
+        clasico: '🟣 Clásico', oceano: '🌊 Océano', bosque: '🌿 Bosque',
+        atardecer: '🌅 Atardecer', candy: '🍬 Candy',
+        futurista: '🌃 Futurista', cyberpunk: '⚡ Cyberpunk'
+      };
+      showToast('Tema: ' + (labels[name] || name));
+
+      // El tema también se guarda en Firestore cuando el usuario pulsa "Guardar cambios"
+    };
+  </script>
+
+  <script type="module">
+    import { initializeApp }                        from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+    import { getAuth }                              from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+    const app  = initializeApp({
+      apiKey:            "AIzaSyAMDcXrNNQ7wJiNZP-9Pmnxo9X2PPSs5kg",
+      authDomain:        "cursologopython.firebaseapp.com",
+      projectId:         "cursologopython",
+      storageBucket:     "cursologopython.firebasestorage.app",
+      messagingSenderId: "268418668428",
+      appId:             "1:268418668428:web:2a45ced6d2f4ad560b68a9"
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+    let uid = null;
+
+    auth.authStateReady().then(async () => {
+      const user = auth.currentUser;
+      if (!user) { location.href = 'index.html'; return; }
+      uid = user.uid;
+
+      try {
+        const snap = await getDoc(doc(db, 'usuarios', uid));
+        if (!snap.exists()) { location.href = 'index.html'; return; }
+        const d = snap.data();
+
+        // Rellenar formulario
+        document.getElementById('inp-nombre').value = d.nombre || '';
+        document.getElementById('inp-edad').value   = d.edad   || '';
+
+        // Avatar
+        const av = d.avatar || '🦁';
+        window.selectAvatar(av);
+
+        // Color
+        const col = d.colorFavorito || '#6366F1';
+        window.selectColor(col);
+
+        // Tema (Firestore tiene prioridad sobre localStorage si es diferente)
+        if (d.tema) {
+          window.selectedTheme = d.tema;
+          window.selectTheme(d.tema);
+        }
+
+        // Hero
+        document.getElementById('hero-name').textContent  = d.nombre || user.email.split('@')[0];
+        document.getElementById('hero-email').textContent = user.email;
+
+        // Stats
+        const progreso = d.progreso || {};
+        const done = Object.values(progreso).filter(Boolean).length;
+        document.getElementById('stat-email').textContent   = user.email;
+        document.getElementById('stat-modulos').textContent = `${done} / 13`;
+        document.getElementById('stat-pct').textContent     = Math.round(done/13*100) + '%';
+        if (d.creadoEn) {
+          const fecha = new Date(d.creadoEn);
+          document.getElementById('stat-desde').textContent =
+            fecha.toLocaleDateString('es-ES', { day:'numeric', month:'short', year:'numeric' });
+        }
+
+      } catch(e) {
+        console.warn(e);
+      }
+
+      hideLoader();
+    }).catch(() => hideLoader());
+
+    window.guardar = async () => {
+      if (!uid) return;
+      const nombre = document.getElementById('inp-nombre').value.trim();
+      const edad   = parseInt(document.getElementById('inp-edad').value) || null;
+
+      if (!nombre) {
+        showToast('⚠️ Escribe tu nombre');
+        return;
+      }
+
+      document.getElementById('btn-save').disabled = true;
+      document.getElementById('btn-save').textContent = '⏳ Guardando...';
+
+      try {
+        await updateDoc(doc(db, 'usuarios', uid), {
+          nombre,
+          edad,
+          avatar:        window.selectedAvatar,
+          colorFavorito: window.selectedColor,
+          tema:          window.selectedTheme,
+        });
+
+        // Actualizar hero
+        document.getElementById('hero-name').textContent  = nombre;
+        document.getElementById('avatar-big').textContent = window.selectedAvatar;
+
+        showToast('✅ ¡Perfil guardado!');
+      } catch(e) {
+        showToast('❌ Error al guardar: ' + e.message);
+      }
+
+      document.getElementById('btn-save').disabled = false;
+      document.getElementById('btn-save').textContent = '💾 Guardar cambios';
+    };
+
+    window.showToast = function(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2500);
+    };
+
+    function hideLoader() {
+      const l = document.getElementById('loader');
+      l.style.opacity = '0';
+      setTimeout(() => l.style.display = 'none', 300);
+    }
+  </script>
+</body>
+</html>
